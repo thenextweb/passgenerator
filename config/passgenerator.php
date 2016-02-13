@@ -5,5 +5,3 @@ return [
     'certificate_store_password'    => env("CERTIFICATE_PASS", ''), // The password to unlo
     'wwdr_certificate_path'         => env("WWDR_CERTIFICATE", ''), // Get from here https://www.apple.com/certificateauthority/ and export to PEM
 ];
-
-

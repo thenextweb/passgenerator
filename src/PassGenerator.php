@@ -74,7 +74,8 @@ class PassGenerator
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
-    public function __construct($pass_id = false, $replace_existent = false) {
+    public function __construct($pass_id = false, $replace_existent = false)
+    {
         // Set certificate
         if (is_file(config('passgenerator.certificate_store_path'))) {
             $this->cert_store = file_get_contents(config('passgenerator.certificate_store_path'));
@@ -98,13 +99,13 @@ class PassGenerator
 
         $this->assets = [];
 
-        if(!$pass_id) {
+        if (!$pass_id) {
             $pass_id = uniqid('pass_', true);
         }
         $this->pass_relative_path = "$pass_id";
         $this->pass_filename = "$pass_id.pkpass";
-        if(Storage::disk('passgenerator')->has($this->pass_filename)) {
-            if($replace_existent) {
+        if (Storage::disk('passgenerator')->has($this->pass_filename)) {
+            if ($replace_existent) {
                 Storage::disk('passgenerator')->delete($this->pass_filename);
             } else {
                 throw new \RuntimeException("The file {$this->pass_filename} already exists, try another pass_id or download.");
@@ -117,7 +118,8 @@ class PassGenerator
      * Clean up the temp folder if the execution was stopped for some reason
      * If it was already removed, nothing happens
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         Storage::disk('passgenerator')->deleteDirectory($this->pass_relative_path);
     }
 
@@ -130,8 +132,9 @@ class PassGenerator
      *
      * @throws InvalidArgumentException
      */
-    public function addAsset($asset_path) {
-        if (is_file($asset_path) ){
+    public function addAsset($asset_path)
+    {
+        if (is_file($asset_path)) {
             $this->assets[basename($asset_path)] = $asset_path;
             return;
         }
@@ -151,11 +154,12 @@ class PassGenerator
      *
      * @throws InvalidArgumentException
      */
-    public function addLocalizedAssets($asset_path, $localization) {
+    public function addLocalizedAssets($asset_path, $localization)
+    {
         throw new \RuntimeException("Not implemented yet");
-        if(is_file($asset_path)){
+        if (is_file($asset_path)) {
             $this->localized_assets[$localization][basename($asset_path)] = $asset_path;
-            if(!in_array($localization, $this->localizations)) {
+            if (!in_array($localization, $this->localizations)) {
                 $this->localizations[] = $localization;
             }
             return;
@@ -172,8 +176,9 @@ class PassGenerator
      *
      * @throws InvalidArgumentException
      */
-    public function setPassDefinition($definition) {
-        if(!is_array($definition)) {
+    public function setPassDefinition($definition)
+    {
+        if (!is_array($definition)) {
             throw new InvalidArgumentException("An invalid Pass definition was provided.");
         }
         $this->pass_json = json_encode($definition);
@@ -188,8 +193,9 @@ class PassGenerator
      *
      * @throws InvalidArgumentException
      */
-    public function setPassDefinitionJson($json_defintion) {
-        if(!json_decode($json_defintion)) {
+    public function setPassDefinitionJson($json_defintion)
+    {
+        if (!json_decode($json_defintion)) {
             throw new InvalidArgumentException("An invalid JSON Pass definition was provided.");
         }
         $this->pass_json = $json_defintion;
@@ -202,7 +208,8 @@ class PassGenerator
      *
      * @return return-type
      */
-    public function create() {
+    public function create()
+    {
         $this->create_temp_folder();
 
         // Create and store the json manifest
@@ -221,7 +228,6 @@ class PassGenerator
 
         // Return the contents, but keep the pkpass stored for future downloads
         return Storage::disk('passgenerator')->get($this->pass_filename);
-
     }
 
     /**
@@ -231,8 +237,9 @@ class PassGenerator
      *
      * @return String|bool If exists, the content of the pass.
      */
-    public static function getPass($pass_id) {
-        if(Storage::disk('passgenerator')->has($pass_id)) {
+    public static function getPass($pass_id)
+    {
+        if (Storage::disk('passgenerator')->has($pass_id)) {
             return Storage::disk('passgenerator')->get($pass_id);
         }
         return false;
@@ -243,16 +250,18 @@ class PassGenerator
      *
      * @return string
      */
-    public static function getPassMimeType() {
+    public static function getPassMimeType()
+    {
         return 'application/vnd.apple.pkpass';
     }
 
     /**
      * Create the JSON manifest with all the hashes from the included files.
      */
-    private function createJsonManifest() {
+    private function createJsonManifest()
+    {
         $hashes['pass.json'] = sha1($this->pass_json);
-        foreach($this->assets as $filename => $path) {
+        foreach ($this->assets as $filename => $path) {
             $hashes[$filename] = sha1(file_get_contents($path));
         }
 
@@ -272,7 +281,8 @@ class PassGenerator
      *
      * @return string A clean DER signature
      */
-    private function removeMimeBS($email_signature) {
+    private function removeMimeBS($email_signature)
+    {
         $last_header_line = 'Content-Disposition: attachment; filename="smime.p7s"';
         $footer_line_start = "\n------";
 
@@ -299,16 +309,17 @@ class PassGenerator
      *
      * @throws \RuntimeException
      */
-    private function signManifest() {
+    private function signManifest()
+    {
         $manifest_path = $this->pass_real_path . '/' . $this->manifest_filename;
         $signature_path = $this->pass_real_path . '/' . $this->signature_filename;
 
         $certs = [];
-        if(openssl_pkcs12_read($this->cert_store, $certs, $this->cert_store_password)) {
+        if (openssl_pkcs12_read($this->cert_store, $certs, $this->cert_store_password)) {
             // Get the certificate resource
             $cert_resource = openssl_x509_read($certs['cert']);
             // Get the private key out of the cert
-            $private_key = openssl_pkey_get_private($certs['pkey'], $this->cert_store_password );
+            $private_key = openssl_pkey_get_private($certs['pkey'], $this->cert_store_password);
             // Sign the manifest and store int in the signature file
 
             openssl_pkcs7_sign($manifest_path, $signature_path, $cert_resource, $private_key, [], PKCS7_BINARY | PKCS7_DETACHED, $this->wwdr_cert_path);
@@ -332,20 +343,21 @@ class PassGenerator
      *
      * @throws \RuntimeException
      */
-    private function zipItAll() {
+    private function zipItAll()
+    {
         $zip_path = $this->pass_real_path . '/' . $this->pass_filename;
         $manifest_path = $this->pass_real_path . '/' . $this->manifest_filename;
         $signature_path = $this->pass_real_path . '/' . $this->signature_filename;
 
         $zip = new \ZipArchive();
-        if(!$zip->open($zip_path, \ZipArchive::CREATE)) {
+        if (!$zip->open($zip_path, \ZipArchive::CREATE)) {
             throw new \RuntimeException("There was a problem while creating the zip file");
         }
 
         $zip->addFile($manifest_path, $this->manifest_filename);
         $zip->addFile($signature_path, $this->signature_filename);
         $zip->addFromString($this->pass_json_filename, $this->pass_json);
-        foreach($this->assets as $name => $path){
+        foreach ($this->assets as $name => $path) {
             $zip->addFile($path, $name);
         }
         $zip->close();
@@ -354,7 +366,8 @@ class PassGenerator
     /*
      * Create a temporary folder to store all files before creating the pass.
      */
-    private function create_temp_folder() {
+    private function create_temp_folder()
+    {
         if (!is_dir($this->pass_real_path)) {
             Storage::disk('passgenerator')->makeDirectory($this->pass_relative_path);
         }

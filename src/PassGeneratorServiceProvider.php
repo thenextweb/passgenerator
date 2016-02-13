@@ -71,5 +71,4 @@ class PassGeneratorServiceProvider extends ServiceProvider
             realpath(__DIR__.'/../config/passgenerator.php') => config_path('passgenerator.php'),
         ], 'config');
     }
-
 }
