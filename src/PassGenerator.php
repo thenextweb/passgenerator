@@ -231,7 +231,7 @@ class PassGenerator
     }
 
     /**
-     * Get a pass which was already created.
+     * Get a pass if it was already created.
      *
      * @param string $pass_id
      *
@@ -241,6 +241,21 @@ class PassGenerator
     {
         if (Storage::disk('passgenerator')->has($pass_id)) {
             return Storage::disk('passgenerator')->get($pass_id);
+        }
+        return false;
+    }
+
+    /**
+     * Get the path to a pass if it was already created.
+     *
+     * @param string $pass_id
+     *
+     * @return string|bool
+     */
+    public static function getPassFilePath($pass_id)
+    {
+        if (Storage::disk('passgenerator')->has($pass_id)) {
+            return $this->pass_real_path . "/../" . $this->pass_filename;
         }
         return false;
     }
