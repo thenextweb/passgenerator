@@ -3,6 +3,7 @@
     "description": "A Laravel package to create Apple Wallet (old Passbook) compatible tickets.",
     "type": "library",
     "license": "GPLv3",
+    "keywords": ["php", "laravel", "Apple", "Passbook"],
     "authors": [
         {
             "name": "The Next Web BV",
