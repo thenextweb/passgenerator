@@ -3,11 +3,11 @@
 Passgenerator is a Laravel5+ package that allows you to easily create passes compatible with Apple Wallet (former Passbook).
 
 # 👉 Table of Contents 👈
-* [Requirements](#-requirements)
-* [Installation](#-installation)
-* [Apple docs](#-apple-docs)
-* [Configuration](#-configuration)
-* [Usage](#-usage)
+* [👮 Requirements](#-requirements)
+* [💾 Installation](#-installation)
+* [🍎 Apple docs](#-apple-docs)
+* [📝 Configuration](#-configuration)
+* [🚀 Usage](#-usage)
 
 ## 👮 Requirements
 
@@ -49,7 +49,7 @@ To start using the package some Apple files are needed, as well as some action i
 
 4. Once the process is finished, the pass certificate can be downloaded. That's not it though, the certificate is downloaded as `.cer` file, which need to be converted to `.p12` in order to work. If you are using a Mac you can import it into _Keychain Access_ and export it from there. Make sure to *remember the password* you have given to the exported file since you'll have to use it later. You can also use other tools to convert the certificate but be sure it includes the private key on the exported PKCS12 file.
 
-5. If you have made iOS development, you probably have already the _Apple Worldwide Developer Relations Intermediate Certificate_ in your Mac’s keychain. If not, it can be downloaded from the [Apple Website](https://www.apple.com/certificateauthority/) (on `.cer` format). This one needs to be exported as `.p12` as well, you can do so from _Keychain Access_ or whatever tool you manage certificates on your OS.
+5. If you have made iOS development, you probably have already the _Apple Worldwide Developer Relations Intermediate Certificate_ in your Mac’s keychain. If not, it can be downloaded from the [Apple Website](https://www.apple.com/certificateauthority/) (on `.cer` format). This one needs to be exported as `.pem`, you can also do so from _Keychain Access_ (or whatever tool you use to manage certificates on your OS).
 
 
 Once all this tedious process has been done, everything is almost ready to start using the package. The easiest now is to add to the following keys to your `.env` file:
@@ -65,7 +65,7 @@ In case there is a reason the config file must be modified (conflicting env keys
 php artisan vendor:publish --provider="Thenextweb\PassGeneratorServiceProvider"
 ```
 
-## 🦄 Usage
+## 🚀 Usage
 To create a pass for the first time, you have to first create the pass definition, either as a JSON file or as an array. It is really recommended to have already read the [Apple docs](https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/PassKit_PG/YourFirst.html#//apple_ref/doc/uid/TP40012195-CH2-SW1) as well as the [PassKit Package Format Reference](https://developer.apple.com/library/ios/documentation/UserExperience/Reference/PassKit_Bundle/Chapters/Introduction.html#//apple_ref/doc/uid/TP40012026).
 
 ```php
