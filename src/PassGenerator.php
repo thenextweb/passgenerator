@@ -239,8 +239,8 @@ class PassGenerator
      */
     public static function getPass($pass_id)
     {
-        if (Storage::disk('passgenerator')->has($pass_id)) {
-            return Storage::disk('passgenerator')->get($pass_id);
+        if (Storage::disk('passgenerator')->has($pass_id . '.pkpass')) {
+            return Storage::disk('passgenerator')->get($pass_id . '.pkpass');
         }
         return false;
     }
@@ -254,7 +254,7 @@ class PassGenerator
      */
     public static function getPassFilePath($pass_id)
     {
-        if (Storage::disk('passgenerator')->has($pass_id)) {
+        if (Storage::disk('passgenerator')->has($pass_id . '.pkpass')) {
             return $this->pass_real_path . "/../" . $this->pass_filename;
         }
         return false;
