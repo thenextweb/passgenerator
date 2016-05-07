@@ -56,7 +56,7 @@ Once all this tedious process has been done, everything is almost ready to start
 
 * CERTIFICATE_PATH ➪ The path to the `.p12` pass certificate.
 * CERTIFICATE_PASS ➪ The password set to unlock the certificate when it was exported.
-* WWDR_CERTIFICATE ➪ The path to the _Apple Worldwide Developer Relations Intermediate Certificate_ on `.p12` format.
+* WWDR_CERTIFICATE ➪ The path to the _Apple Worldwide Developer Relations Intermediate Certificate_ on `.pem` format.
 
 In case there is a reason the config file must be modified (conflicting env keys, dynamic certificates required...), it can be published with the following command:
 
