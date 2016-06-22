@@ -252,7 +252,7 @@ class PassGenerator
      *
      * @return string|bool
      */
-    public static function getPassFilePath($pass_id)
+    public function getPassFilePath($pass_id)
     {
         if (Storage::disk('passgenerator')->has($pass_id . '.pkpass')) {
             return $this->pass_real_path . "/../" . $this->pass_filename;
