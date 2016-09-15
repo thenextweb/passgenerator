@@ -72,7 +72,6 @@ class PassGenerator
      *
      * @param bool|string $passId          [optional] If given, it'll be used to name the pass file.
      * @param bool        $replaceExistent [optional] If true, it'll replace any existing pass with the same filename.
-     *
      */
     public function __construct($passId = false, $replaceExistent = false)
     {
@@ -311,16 +310,17 @@ class PassGenerator
 //             }
 //         }
 
-        return json_encode((object)$hashes);
+        return json_encode((object) $hashes);
     }
 
     /**
      * Remove all the MIME and email crap around the DER signature and decode it from base64.
      *
      * @param $emailSignature
-     * @return string A clean DER signature
-     * @internal param string $signature The returned result of openssl_pkcs7_sign()
      *
+     * @return string A clean DER signature
+     *
+     * @internal param string $signature The returned result of openssl_pkcs7_sign()
      */
     private function removeMimeBS($emailSignature)
     {
