@@ -1,4 +1,6 @@
-<?php namespace Thenextweb\Facades;
+<?php
+
+namespace Thenextweb\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

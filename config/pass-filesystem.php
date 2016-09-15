@@ -1,9 +1,8 @@
 <?php
 /**
  * If there's no specific filesystem defined for us, let's just copy the default one and change
- * the root
+ * the root.
  */
-
 $config = config('filesystems');
 
 // Check whether there is a specific filesystem defined for passgenerator
@@ -18,6 +17,7 @@ if (isset($config['disks'][$passgenerator_fs])) {
     $config['disks']['passgenerator'] = $config['disks'][$passgenerator_fs];
     $config['disks']['passgenerator']['root'] = storage_path('app/passgenerator');
 } else {
-    throw new Exception("There must be a default filesystem defined.");
+    throw new Exception('There must be a default filesystem defined.');
 }
+
 return $config;
