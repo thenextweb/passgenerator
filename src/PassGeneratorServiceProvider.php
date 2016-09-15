@@ -1,7 +1,8 @@
-<?php namespace Thenextweb;
+<?php
+
+namespace Thenextweb;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Routing\Router;
 
 class PassGeneratorServiceProvider extends ServiceProvider
 {
@@ -57,9 +58,9 @@ class PassGeneratorServiceProvider extends ServiceProvider
     {
         //This will merge the 'default' values from the original config file of the package
         // with the values of the "published" config file (in case the config files were not published)
-        $this->mergeConfigFrom(realpath(__DIR__ . '/../config/passgenerator.php'), 'passgenerator');
+        $this->mergeConfigFrom(realpath(__DIR__.'/../config/passgenerator.php'), 'passgenerator');
 
-        $this->mergeConfigFrom(realpath(__DIR__ . '/../config/pass-filesystem.php'), 'filesystems');
+        $this->mergeConfigFrom(realpath(__DIR__.'/../config/pass-filesystem.php'), 'filesystems');
     }
 
     /**
