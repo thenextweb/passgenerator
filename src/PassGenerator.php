@@ -5,6 +5,7 @@ namespace Thenextweb;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use RuntimeException;
+use Thenextweb\Definitions\DefinitionInterface;
 use ZipArchive;
 
 class PassGenerator
@@ -196,6 +197,10 @@ class PassGenerator
      */
     public function setPassDefinition($definition)
     {
+        if ($definition instanceof DefinitionInterface) {
+            $definition = $definition->getPassDefinition();
+        }
+
         if (!is_array($definition)) {
             throw new InvalidArgumentException('An invalid Pass definition was provided.');
         }

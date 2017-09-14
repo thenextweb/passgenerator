@@ -11,5 +11,8 @@ namespace Thenextweb\Definitions;
 
 interface DefinitionInterface
 {
-
+    /**
+     * @return array
+     */
+    public function getPassDefinition();
 }
