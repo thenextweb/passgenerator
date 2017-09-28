@@ -66,7 +66,7 @@ php artisan vendor:publish --provider="Thenextweb\PassGeneratorServiceProvider"
 ```
 
 ## 🚀 Usage
-To create a pass for the first time, you have to first create the pass definition, either as a JSON file or as an array. It is really recommended to have already read the [Apple docs](https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/PassKit_PG/YourFirst.html#//apple_ref/doc/uid/TP40012195-CH2-SW1) as well as the [PassKit Package Format Reference](https://developer.apple.com/library/ios/documentation/UserExperience/Reference/PassKit_Bundle/Chapters/Introduction.html#//apple_ref/doc/uid/TP40012026).
+To create a pass for the first time, you have to first create the pass definition, either as a JSON file or as an array. It is *really* recommended to have already read the [Apple docs](https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/PassKit_PG/YourFirst.html#//apple_ref/doc/uid/TP40012195-CH2-SW1) as well as the [PassKit Package Format Reference](https://developer.apple.com/library/ios/documentation/UserExperience/Reference/PassKit_Bundle/Chapters/Introduction.html#//apple_ref/doc/uid/TP40012026).
 
 ```php
 
@@ -214,3 +214,41 @@ if (!$pkpass) {
 ```
 
 It is also possible to retrieve the actual path to a pass on your filesystem. By default, _Passgenerator_  will copy your default filesystem config (usually rooted on `storage_path('app')` but you can always do `getPassFilePath($pass_identifier)` and retrieve the real path (in case it exists).
+
+### Definitions
+It is also possible to programatically create/modify a pass using the definitions objects. Eg.-
+
+```
+$coupon = Thenextweb\Definitions\Coupon();
+$coupon->setDescription('Coupon description');
+$coupon->setSerialNumber('123456');
+
+$coupon->setUserInfo([
+    'email' => 'user@domain.com',
+]);
+$coupon->setExpirationDate(Carbon::now()->addMonths(6));
+
+$location = new Location();
+$location->setLatitude(40.4378698);
+$location->setLongitude(-3.819619);
+$coupon->addLocation($location);
+
+$coupon->setMaxDistance(50);
+$coupon->setRelevantDate(Carbon::now()->addDays(10));
+
+$coupon->addAuxiliaryField(new Field('key', 'value'));
+
+$coupon->addBackField(new Number('price', 13, [
+    'currencyCode' => 'EUR',
+    'numberStyle' => Number::STYLE_DECIMAL
+]));
+
+$coupon->addPrimaryField(new Date('created_at', Carbon::now(), [
+    'dateStyle' => Date::STYLE_FULL,
+]));
+
+$barcode = new Barcode('7898466321', Barcode::FORMAT_CODE128);
+$coupon->addBarcode($barcode);
+
+$passgenerator->setPassDefinition($coupon);
+```
