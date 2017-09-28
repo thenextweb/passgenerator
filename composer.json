@@ -12,7 +12,8 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "ext-zip": "*"
+        "ext-zip": "*",
+        "illuminate/support": "5.*"
     },
     "require-dev": {
         "phpunit/phpunit" : "4.*",
