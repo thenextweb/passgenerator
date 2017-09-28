@@ -83,7 +83,7 @@ class PassGenerator
             $this->certStore = file_get_contents($certPath);
         } else {
             throw new InvalidArgumentException(
-                'No certificate found on '.$certPath
+                'No certificate found on ' . $certPath
             );
         }
 
@@ -96,7 +96,7 @@ class PassGenerator
         if (is_file($wwdrCertPath) && @openssl_x509_read(file_get_contents($wwdrCertPath))) {
             $this->wwdrCertPath = $wwdrCertPath;
         } else {
-            $errorMsg = 'No valid intermediate certificate was found on '.$wwdrCertPath.PHP_EOL;
+            $errorMsg = 'No valid intermediate certificate was found on ' . $wwdrCertPath . PHP_EOL;
             $errorMsg .= 'The WWDR intermediate certificate must be on PEM format, ';
             $errorMsg .= 'the DER version can be found at https://www.apple.com/certificateauthority/ ';
             $errorMsg .= "But you'll need to export it into PEM.";
@@ -110,14 +110,14 @@ class PassGenerator
 
         $this->passRelativePath = $passId;
 
-        $this->passFilename = $passId.'.pkpass';
+        $this->passFilename = $passId . '.pkpass';
 
         if (Storage::disk('passgenerator')->has($this->passFilename)) {
             if ($replaceExistent) {
                 Storage::disk('passgenerator')->delete($this->passFilename);
             } else {
                 throw new RuntimeException(
-                    'The file '.$this->passFilename.' already exists, try another pass_id or download.'
+                    'The file ' . $this->passFilename . ' already exists, try another pass_id or download.'
                 );
             }
         }
@@ -125,7 +125,7 @@ class PassGenerator
         $this->passRealPath = Storage::disk('passgenerator')
                 ->getDriver()
                 ->getAdapter()
-                ->getPathPrefix().$this->passRelativePath;
+                ->getPathPrefix() . $this->passRelativePath;
     }
 
     /**
@@ -238,7 +238,7 @@ class PassGenerator
         // Create and store the json manifest
         $manifest = $this->createJsonManifest();
 
-        Storage::disk('passgenerator')->put($this->passRelativePath.'/manifest.json', $manifest);
+        Storage::disk('passgenerator')->put($this->passRelativePath . '/manifest.json', $manifest);
 
         // Sign manifest with the certificate
         $this->signManifest();
@@ -247,7 +247,7 @@ class PassGenerator
         $this->zipItAll();
 
         // Get it out of the tmp folder and clean everything up
-        Storage::disk('passgenerator')->move($this->passRelativePath.'/'.$this->passFilename, $this->passFilename);
+        Storage::disk('passgenerator')->move($this->passRelativePath . '/' . $this->passFilename, $this->passFilename);
 
         Storage::disk('passgenerator')->deleteDirectory($this->passRelativePath);
 
@@ -264,8 +264,8 @@ class PassGenerator
      */
     public static function getPass($passId)
     {
-        if (Storage::disk('passgenerator')->has($passId.'.pkpass')) {
-            return Storage::disk('passgenerator')->get($passId.'.pkpass');
+        if (Storage::disk('passgenerator')->has($passId . '.pkpass')) {
+            return Storage::disk('passgenerator')->get($passId . '.pkpass');
         }
 
         return false;
@@ -280,8 +280,8 @@ class PassGenerator
      */
     public function getPassFilePath($passId)
     {
-        if (Storage::disk('passgenerator')->has($passId.'.pkpass')) {
-            return $this->passRealPath.'/../'.$this->passFilename;
+        if (Storage::disk('passgenerator')->has($passId . '.pkpass')) {
+            return $this->passRealPath . '/../' . $this->passFilename;
         }
 
         return false;
@@ -361,9 +361,9 @@ class PassGenerator
      */
     private function signManifest()
     {
-        $manifestPath = $this->passRealPath.'/'.$this->manifestFilename;
+        $manifestPath = $this->passRealPath . '/' . $this->manifestFilename;
 
-        $signaturePath = $this->passRealPath.'/'.$this->signatureFilename;
+        $signaturePath = $this->passRealPath . '/' . $this->signatureFilename;
 
         $certs = [];
 
@@ -391,11 +391,11 @@ class PassGenerator
         // PKCS7 returns a signature on PEM format (.p7s), we only need the DER signature so Apple does not cry.
         // It turns out we are lucky since p7s format is just a Base64 encoded DER signature
         // enclosed between some email headers a MIME bs, so we just need to remove some lines
-        $signature = Storage::disk('passgenerator')->get($this->passRelativePath.'/'.$this->signatureFilename);
+        $signature = Storage::disk('passgenerator')->get($this->passRelativePath . '/' . $this->signatureFilename);
 
         $signature = $this->removeMimeBS($signature);
 
-        Storage::disk('passgenerator')->put($this->passRelativePath.'/'.$this->signatureFilename, $signature);
+        Storage::disk('passgenerator')->put($this->passRelativePath . '/' . $this->signatureFilename, $signature);
     }
 
     /**
@@ -405,11 +405,11 @@ class PassGenerator
      */
     private function zipItAll()
     {
-        $zipPath = $this->passRealPath.'/'.$this->passFilename;
+        $zipPath = $this->passRealPath . '/' . $this->passFilename;
 
-        $manifestPath = $this->passRealPath.'/'.$this->manifestFilename;
+        $manifestPath = $this->passRealPath . '/' . $this->manifestFilename;
 
-        $signaturePath = $this->passRealPath.'/'.$this->signatureFilename;
+        $signaturePath = $this->passRealPath . '/' . $this->signatureFilename;
 
         $zip = new ZipArchive();
 

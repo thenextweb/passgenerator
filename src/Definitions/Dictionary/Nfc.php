@@ -8,7 +8,6 @@
 
 namespace Thenextweb\Definitions\Dictionary;
 
-
 use Illuminate\Support\Fluent;
 
 class Nfc extends Fluent

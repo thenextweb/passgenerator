@@ -8,7 +8,6 @@
 
 namespace Thenextweb\Definitions;
 
-
 class EventTicket extends AbstractDefinition
 {
     protected $style = 'eventTicket';

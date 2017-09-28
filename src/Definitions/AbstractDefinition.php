@@ -1,4 +1,5 @@
 <?php
+
 namespace Thenextweb\Definitions;
 
 use Carbon\Carbon;
@@ -52,7 +53,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
 
     public function setOrganizationName($organizationName)
     {
-        $this->attributes['organizationName'] =$organizationName;
+        $this->attributes['organizationName'] = $organizationName;
 
         return $this;
     }
@@ -90,7 +91,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
     {
         $this->attributes['associatedStoreIdentifiers'] = is_array($associatedStoreIdentifier)
             ? $associatedStoreIdentifier
-            : array($associatedStoreIdentifier);
+            : [$associatedStoreIdentifier];
 
         return $this;
     }
@@ -411,7 +412,6 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this->getStructure('secondaryFields');
     }
 
-
     public function setTransitType($transitType)
     {
         $this->attributes['transitType'] = $transitType;
@@ -444,7 +444,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
 
         return $array;
     }
-    
+
     /**
      * Returns an array representation of the definition compatible with PassKit Package Format
      */
@@ -465,11 +465,10 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         if (array_key_exists('relevantDate', $data) && $data['relevantDate'] instanceof Carbon) {
             $data['relevantDate'] = $data['relevantDate']->format(DATE_W3C);
         }
-        
+
         if (array_key_exists('structure', $data)) {
             $structure = $data['structure'];
             unset($data['structure']);
-
 
             foreach ($structure as $key => $value) {
                 if (!$value instanceof Collection) {

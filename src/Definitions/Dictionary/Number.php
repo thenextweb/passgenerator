@@ -8,7 +8,6 @@
 
 namespace Thenextweb\Definitions\Dictionary;
 
-
 class Number extends Field
 {
     const STYLE_DECIMAL = 'PKNumberStyleDecimal';

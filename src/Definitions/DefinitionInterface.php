@@ -8,7 +8,6 @@
 
 namespace Thenextweb\Definitions;
 
-
 interface DefinitionInterface
 {
     /**

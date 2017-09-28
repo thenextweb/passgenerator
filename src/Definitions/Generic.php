@@ -8,7 +8,6 @@
 
 namespace Thenextweb\Definitions;
 
-
 class Generic extends AbstractDefinition
 {
     protected $style = 'generic';

@@ -8,7 +8,6 @@
 
 namespace Thenextweb\Definitions\Dictionary;
 
-
 use Carbon\Carbon;
 
 class Date extends Field
@@ -26,7 +25,7 @@ class Date extends Field
     public function setDateStyle($dateStyle)
     {
         $this->attributes['dateStyle'] = $dateStyle;
-        
+
         return $this;
     }
 

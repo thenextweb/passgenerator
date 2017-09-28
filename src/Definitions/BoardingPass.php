@@ -8,7 +8,6 @@
 
 namespace Thenextweb\Definitions;
 
-
 class BoardingPass extends AbstractDefinition
 {
     protected $style = 'boardingPass';

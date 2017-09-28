@@ -8,7 +8,6 @@
 
 namespace Thenextweb\Definitions;
 
-
 class StoreCard extends AbstractDefinition
 {
     protected $style = 'storeCard';

@@ -8,7 +8,6 @@
 
 namespace Thenextweb\Definitions;
 
-
 class Coupon extends AbstractDefinition
 {
     protected $style = 'coupon';

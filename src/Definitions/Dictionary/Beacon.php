@@ -10,7 +10,6 @@ namespace Thenextweb\Definitions\Dictionary;
 
 use Illuminate\Support\Fluent;
 
-
 class Beacon extends Fluent
 {
     /**
