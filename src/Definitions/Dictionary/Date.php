@@ -71,7 +71,7 @@ class Date extends Field
         $data = [];
         foreach ($this->attributes as $key => $value) {
             if ($value instanceof Carbon) {
-                $data[$key] = $value->format('c');
+                $data[$key] = $value->toW3cString();
             } else {
                 $data[$key] = $value;
             }
