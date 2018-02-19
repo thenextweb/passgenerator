@@ -2,7 +2,7 @@
     "name": "thenextweb/passgenerator",
     "description": "A Laravel package to create Apple Wallet (old Passbook) compatible tickets.",
     "type": "library",
-    "license": "GPLv3",
+    "license": "GPL-3.0-or-later",
     "keywords": ["php", "laravel", "Apple", "Passbook"],
     "authors": [
         {
