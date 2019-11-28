@@ -39,9 +39,9 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
 
         $this->attributes['formatVersion'] = $this->formatVersion;
 
-        $this->attributes['passTypeIdentifier'] = config('passbook.pass_type_identifier', '');
-        $this->attributes['organizationName']   = config('passbook.organization_name', '');
-        $this->attributes['teamIdentifier']     = config('passbook.team_identifier', '');
+        $this->attributes['passTypeIdentifier'] = config('passgenerator.pass_type_identifier', '');
+        $this->attributes['organizationName']   = config('passgenerator.organization_name', '');
+        $this->attributes['teamIdentifier']     = config('passgenerator.team_identifier', '');
     }
 
     public function setDescription($description)
