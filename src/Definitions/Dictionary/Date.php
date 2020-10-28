@@ -10,22 +10,13 @@ class Date extends Field
     /**
      * Either specify both a date style and a time style, or neither.
      */
-
     const STYLE_NONE = 'PKDateStyleNone';
     const STYLE_SHORT = 'PKDateStyleShort';
     const STYLE_MEDIUM = 'PKDateStyleMedium';
     const STYLE_LONG = 'PKDateStyleLong';
     const STYLE_FULL = 'PKDateStyleFull';
-
     /** @var array<string> */
-    private $validStyles = [
-        self::STYLE_NONE,
-        self::STYLE_SHORT,
-        self::STYLE_MEDIUM,
-        self::STYLE_LONG,
-        self::STYLE_FULL,
-    ];
-
+    private $validStyles = [self::STYLE_NONE, self::STYLE_SHORT, self::STYLE_MEDIUM, self::STYLE_LONG, self::STYLE_FULL];
     /**
      * Style of date to display. Must be one of the styles from the class.
      *

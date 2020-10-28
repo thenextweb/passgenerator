@@ -175,7 +175,7 @@ class Field extends Fluent
     {
         if (!empty($detectors)) {
             foreach ($detectors as $detector) {
-                if (!in_array($detector, $this->validDetectors)){
+                if (!in_array($detector, $this->validDetectors)) {
                     throw new InvalidArgumentException("Invalid detector found: $detector");
                 }
             }
@@ -188,7 +188,7 @@ class Field extends Fluent
      */
     private function validateAlignment(string $alignment) : void
     {
-        if (!in_array($alignment, $this->validAlignments)){
+        if (!in_array($alignment, $this->validAlignments)) {
             throw new InvalidArgumentException("Invalid alignment: $alignment");
         }
     }

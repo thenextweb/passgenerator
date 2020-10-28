@@ -7,10 +7,10 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Fluent;
+use Thenextweb\Definitions\Dictionary\Barcode;
 use Thenextweb\Definitions\Dictionary\Beacon;
 use Thenextweb\Definitions\Dictionary\Field;
 use Thenextweb\Definitions\Dictionary\Location;
-use Thenextweb\Definitions\Dictionary\Barcode;
 use Thenextweb\Definitions\Dictionary\Nfc;
 
 abstract class AbstractDefinition extends Fluent implements DefinitionInterface
@@ -32,46 +32,84 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         $this->attributes['formatVersion'] = $this->formatVersion;
 
         $this->attributes['passTypeIdentifier'] = config('passgenerator.pass_type_identifier', '');
-        $this->attributes['organizationName']   = config('passgenerator.organization_name', '');
-        $this->attributes['teamIdentifier']     = config('passgenerator.team_identifier', '');
+        $this->attributes['organizationName'] = config('passgenerator.organization_name', '');
+        $this->attributes['teamIdentifier'] = config('passgenerator.team_identifier', '');
     }
-
-    public function setDescription(string $description) : self
+    /**
+     * Brief description of the pass, used by the iOS accessibility technologies.
+     *
+     * Don’t try to include all of the data on the pass in its description, just
+     * include enough detail to distinguish passes of the same type.
+     *
+     * @param string $description
+     * @return self
+     */
+    public function setDescription(string $description): self
     {
         $this->attributes['description'] = $description;
 
         return $this;
     }
-
-    public function setOrganizationName(string $organizationName) : self
+    /**
+     * Display name of the organization that originated and signed the pass.
+     *
+     * @param string $organizationName
+     * @return self
+     */
+    public function setOrganizationName(string $organizationName): self
     {
         $this->attributes['organizationName'] = $organizationName;
 
         return $this;
     }
-
-    public function setPassTypeIdentifier(string $passTypeIdentifier) : self
+    /**
+     * Pass type identifier, as issued by Apple. The value must correspond with
+     * your signing certificate.
+     *
+     * @param string $passTypeIdentifier
+     * @return self
+     */
+    public function setPassTypeIdentifier(string $passTypeIdentifier): self
     {
         $this->attributes['passTypeIdentifier'] = $passTypeIdentifier;
 
         return $this;
     }
-
-    public function setSerialNumber(string $serialNumber) : self
+    /**
+     * Serial number that uniquely identifies the pass. No two passes with the same pass type identifier may have the same serial number.
+     *
+     * @param string $serialNumber
+     * @return self
+     */
+    public function setSerialNumber(string $serialNumber): self
     {
         $this->attributes['serialNumber'] = $serialNumber;
 
         return $this;
     }
-
-    public function setTeamIdentifier(string $teamIdentifier) : self
+    /**
+     * Team identifier of the organization that originated and signed the pass,
+     * as issued by Apple.
+     *
+     * @param string $teamIdentifier
+     * @return self
+     */
+    public function setTeamIdentifier(string $teamIdentifier): self
     {
         $this->attributes['teamIdentifier'] = $teamIdentifier;
 
         return $this;
     }
-
-    public function setAppLaunchURL(string $appLaunchURL, array $associatedStoreIdentifier = null) : self
+    /**
+     * A URL to be passed to the associated app when launching it.
+     * If this key is present, the associatedStoreIdentifiers key
+     * must also be present.
+     *
+     * @param string $appLaunchURL
+     * @param array $associatedStoreIdentifier A list of iTunes Store item identifiers for the associated apps.
+     * @return self
+     */
+    public function setAppLaunchURL(string $appLaunchURL, array $associatedStoreIdentifier = null): self
     {
         $this->attributes['appLaunchURL'] = $appLaunchURL;
         if (is_array($associatedStoreIdentifier)) {
@@ -80,42 +118,89 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
 
         return $this;
     }
-
-    public function setAssociatedStoreIdentifier(array $associatedStoreIdentifier) : self
+    /**
+     *  A list of iTunes Store item identifiers for the associated apps.
+     *
+     * Only one item in the list is used—the first item identifier for an app
+     * compatible with the current device. If the app is not installed, the
+     * link opens the App Store and shows the app. If the app is already
+     * installed, the link launches the app.
+     *
+     * @param array $associatedStoreIdentifier
+     * @return self
+     */
+    public function setAssociatedStoreIdentifier(array $associatedStoreIdentifier): self
     {
         $this->attributes['associatedStoreIdentifiers'] = $associatedStoreIdentifier;
 
         return $this;
     }
-
-    public function setUserInfo(array $userInfo) : self
+    /**
+     * Custom information for companion apps. This data is not displayed to the user.
+     *
+     * For example, a pass for a cafe could include information about the user’s
+     * favorite drink and sandwich in a machine-readable form for the companion
+     * app to read, making it easy to place an order for “the usual” from the app.
+     *
+     * Available in iOS 7.0.
+     *
+     * @param array $userInfo
+     * @return self
+     */
+    public function setUserInfo(array $userInfo): self
     {
         $this->attributes['userInfo'] = $userInfo;
 
         return $this;
     }
 
-    public function setExpirationDate(Carbon $expirationDate) : self
+    /**
+     * Date and time when the pass expires.
+     *
+     * @param \Carbon\Carbon $expirationDate
+     * @return self
+     */
+    public function setExpirationDate(Carbon $expirationDate): self
     {
         $this->attributes['expirationDate'] = $expirationDate;
 
         return $this;
     }
 
-    public function setVoided(bool $flag) : self
+    /**
+     * Indicates that the pass is void—for example, a one time use coupon that has
+     * been redeemed. The default value is false.
+     * Available in iOS 7.0.
+     *
+     * @param bool $flag
+     * @return self
+     */
+    public function setVoided(bool $flag): self
     {
         $this->attributes['voided'] = $flag;
 
         return $this;
     }
 
-    public function setBeacons(Collection $beacons) : self
+    /**
+     *  Beacons marking locations where the pass is relevant.
+     *
+     * @param \Illuminate\Support\Collection $beacons
+     * @return self
+     */
+    public function setBeacons(Collection $beacons): self
     {
         $this->attributes['beacons'] = $beacons;
         return $this;
     }
 
-    public function addBeacon(Beacon $beacon) : self
+    /**
+     *  Beacon marking a location where the pass is relevant.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Beacon $beacon
+     * @return self
+     */
+    public function addBeacon(Beacon $beacon): self
     {
         if (!array_key_exists('beacons', $this->attributes)) {
             $this->attributes['beacons'] = collect();
@@ -126,13 +211,25 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
-    public function setLocations(Collection $locations) : self
+    /**
+     * Locations where the pass is relevant. For example, the location of your store.
+     *
+     * @param \Illuminate\Support\Collection<\Thenextweb\Definitions\Dictionary\Location> $locations
+     * @return self
+     */
+    public function setLocations(Collection $locations): self
     {
         $this->attributes['locations'] = $locations;
         return $this;
     }
 
-    public function addLocation(Location $location) : self
+    /**
+     * Locations where the pass is relevant. For example, the location of your store.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Location $location
+     * @return self
+     */
+    public function addLocation(Location $location): self
     {
         if (!array_key_exists('locations', $this->attributes)) {
             $this->attributes['locations'] = collect();
@@ -144,7 +241,11 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
     }
 
     /**
-     * Undocumented function
+     * Maximum distance in meters from a relevant latitude and longitude that
+     * the pass is relevant. This number is compared to the pass’s default distance
+     * and the smaller value is used.
+     *
+     * Available in iOS 7.0.
      *
      * @param int $maxDistance
      * @return self
@@ -156,7 +257,15 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
-    public function setRelevantDate(Carbon $relevantDate) : self
+    /**
+     * Recommended for event tickets and boarding passes; otherwise optional.
+     * Date and time when the pass becomes relevant. For example, the start
+     * time of a movie.
+     *
+     * @param \Carbon\Carbon $relevantDate
+     * @return self
+     */
+    public function setRelevantDate(Carbon $relevantDate): self
     {
         $this->attributes['relevantDate'] = $relevantDate;
 
@@ -164,25 +273,41 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
     }
 
     /**
+     * Information specific to the pass’s barcode.
+     *
      * For iOS 8 and earlier
      *
      * @param \Thenextweb\Definitions\Dictionary\Barcode $barcode
      * @deprecated Use addBarcode instead for iOS 9 and later
      */
-    public function setBarcode(Barcode $barcode) : self
+    public function setBarcode(Barcode $barcode): self
     {
         $this->attributes['barcode'] = $barcode;
 
         return $this;
     }
 
-    public function setBarcodes(Collection $barcodes) : self
+    /**
+     * Information specific to the pass’s barcode. The system uses the first
+     * valid barcode dictionary in the array. Additional dictionaries can be
+     * added as fallbacks.
+     *
+     * @param \Illuminate\Support\Collection<\Thenextweb\Definitions\Dictionary\Barcode> $barcodes
+     * @return self
+     */
+    public function setBarcodes(Collection $barcodes): self
     {
         $this->attributes['barcodes'] = $barcodes;
         return $this;
     }
 
-    public function addBarcode(Barcode $barcode) : self
+    /**
+     * Information specific to the pass’s barcode.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Barcode $barcode
+     * @return self
+     */
+    public function addBarcode(Barcode $barcode): self
     {
         if (!array_key_exists('barcodes', $this->attributes)) {
             $this->attributes['barcodes'] = collect();
@@ -193,6 +318,13 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
+    /**
+     * Background color of the pass, specified as an CSS-style RGB triple.
+     * For example, rgb(23, 187, 82).
+     *
+     * @param string $color
+     * @return self
+     */
     public function setBackgroundColor(string $color) : self
     {
         $this->attributes['backgroundColor'] = $color;
@@ -200,6 +332,13 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
+    /**
+     * Foreground color of the pass, specified as a CSS-style RGB triple.
+     * For example, rgb(100, 10, 110).
+     *
+     * @param string $foregroundColor
+     * @return self
+     */
     public function setForegroundColor(string $foregroundColor) : self
     {
         $this->attributes['foregroundColor'] = $foregroundColor;
@@ -208,7 +347,16 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
     }
 
     /**
-     * Valid for Event Tickets and Boarding Passes ONLY
+     * Optional for EVENT TICKETS and BOARDING PASSES; otherwise not allowed.
+     * Identifier used to group related passes. If a grouping identifier is
+     * specified, passes with the same style, pass type identifier, and
+     * grouping identifier are displayed as a group. Otherwise, passes are
+     * grouped automatically.
+     *
+     * Use this to group passes that are tightly related, such as the boarding
+     * passes for different connections of the same trip.
+     *
+     * Available in iOS 7.0.
      *
      * @param string $groupingIdentifier
      * @return self
@@ -220,6 +368,15 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
+    /**
+     *  Color of the label text, specified as a CSS-style RGB triple.
+     * For example, rgb(255, 255, 255).
+     *
+     * If omitted, the label color is determined automatically.
+     *
+     * @param string $labelColor
+     * @return self
+     */
     public function setLabelColor(string $labelColor) : self
     {
         $this->attributes['labelColor'] = $labelColor;
@@ -227,6 +384,12 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
+    /**
+     * Text displayed next to the logo on the pass.
+     *
+     * @param string $logoText
+     * @return self
+     */
     public function setLogoText(string $logoText) : self
     {
         $this->attributes['logoText'] = $logoText;
@@ -234,6 +397,15 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
+    /**
+     * If true, the strip image is displayed without a shine effect.
+     * The default value prior to iOS 7.0 is false.
+     *
+     * In iOS 7.0, a shine effect is never applied, and this key is deprecated.
+     *
+     * @param bool $flag
+     * @return self
+     */
     public function setSuppressStripShine(bool $flag) : self
     {
         $this->attributes['suppressStripShine'] = $flag;
@@ -241,6 +413,20 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
+    /**
+     * The URL of a web service that conforms to the API described in
+     * PassKit Web Service Reference.
+     *
+     * The web service must use the HTTPS protocol; the leading https:// is
+     * included in the value of this key.
+     *
+     * On devices configured for development, there is UI in Settings to allow
+     * HTTP web services.
+     *
+     * @param string $webServiceURL
+     * @param string $authenticationToken
+     * @return self
+     */
     public function setWebService(string $webServiceURL, string $authenticationToken) : self
     {
         $this->attributes['webServiceURL'] = $webServiceURL;
@@ -249,6 +435,12 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
+    /**
+     * Information used for Value Added Service Protocol transactions.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Nfc $nfc
+     * @return self
+     */
     public function setNfc(Nfc $nfc) : self
     {
         $this->attributes['nfc'] = $nfc;

@@ -31,7 +31,7 @@ class BoardingPass extends AbstractDefinition
 
     public function __construct(array $attributes)
     {
-        if(isset($attributes['transitType']) && !in_array($attributes['transitType'], $this->validTransitTypes)) {
+        if (isset($attributes['transitType']) && !in_array($attributes['transitType'], $this->validTransitTypes)) {
             throw new InvalidArgumentException("Invalid Transit Type: {$attributes['transitType']}");
         }
     }

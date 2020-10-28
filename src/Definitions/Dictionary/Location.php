@@ -44,7 +44,6 @@ class Location extends Fluent
         return $this;
     }
 
-
     /**
      * Longitude, in degrees, of the location.
      *

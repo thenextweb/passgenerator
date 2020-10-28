@@ -16,7 +16,7 @@ class Barcode extends Fluent
         self::FORMAT_AZTEX,
         self::FORMAT_CODE128,
         self::FORMAT_PDF417,
-        self::FORMAT_QR
+        self::FORMAT_QR,
     ];
 
     /**
