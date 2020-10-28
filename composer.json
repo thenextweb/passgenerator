@@ -3,7 +3,12 @@
     "description": "A Laravel package to create Apple Wallet (old Passbook) compatible tickets.",
     "type": "library",
     "license": "GPL-3.0-or-later",
-    "keywords": ["php", "laravel", "Apple", "Passbook"],
+    "keywords": [
+        "php",
+        "laravel",
+        "Apple",
+        "Passbook"
+    ],
     "authors": [
         {
             "name": "The Next Web BV",
@@ -11,14 +16,16 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9",
         "ext-zip": "*",
-        "illuminate/support": "5.*|6.*|7.*"
+        "illuminate/support": "^6.0|^7.0|^8.0",
+        "thecodingmachine/safe": "^1.3"
     },
     "require-dev": {
-        "phpunit/phpunit" : "4.*",
-        "phpspec/phpspec": "~2.1",
-        "orchestra/testbench": "~3.1"
+        "phpunit/phpunit": "^9.0",
+        "nunomaduro/larastan": "^0.6",
+        "orchestra/testbench": "^4.0|^5.0|^6.0",
+        "thecodingmachine/phpstan-safe-rule": "^1.0",
+        "rector/rector": "^0.7"
     },
     "autoload": {
         "psr-4": {
