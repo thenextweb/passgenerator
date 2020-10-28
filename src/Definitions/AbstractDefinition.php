@@ -347,28 +347,6 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
     }
 
     /**
-     * Optional for EVENT TICKETS and BOARDING PASSES; otherwise not allowed.
-     * Identifier used to group related passes. If a grouping identifier is
-     * specified, passes with the same style, pass type identifier, and
-     * grouping identifier are displayed as a group. Otherwise, passes are
-     * grouped automatically.
-     *
-     * Use this to group passes that are tightly related, such as the boarding
-     * passes for different connections of the same trip.
-     *
-     * Available in iOS 7.0.
-     *
-     * @param string $groupingIdentifier
-     * @return self
-     */
-    public function setGroupingIdentifier(string $groupingIdentifier) : self
-    {
-        $this->attributes['groupingIdentifier'] = $groupingIdentifier;
-
-        return $this;
-    }
-
-    /**
      *  Color of the label text, specified as a CSS-style RGB triple.
      * For example, rgb(255, 255, 255).
      *
@@ -448,10 +426,13 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
-    /* ######### */
-    /* AUXILIARY FIELDS */
+    /**
+     * AUXILIARY FIELDS
+     **/
 
     /**
+     * Additional fields to be displayed on the front of the pass.
+     *
      * @param Field $field
      * @return $this
      */
@@ -462,25 +443,44 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
+    /**
+     * Additional fields to be displayed on the front of the pass.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Field $field
+     * @return \Illuminate\Support\Collection
+     */
     public function prependAuxiliaryField(Field $field) : Collection
     {
         return $this->getStructure('auxiliaryFields')->prepend($field);
     }
 
+    /**
+     * Additional fields to be displayed on the front of the pass.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Field $field
+     * @return self
+     */
     public function addAuxiliaryField(Field $field) : self
     {
         return $this->appendAuxiliaryField($field);
     }
 
+    /**
+     * Additional fields to be displayed on the front of the pass.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getAuxiliaryFields() : Collection
     {
         return $this->getStructure('auxiliaryFields');
     }
 
-    /* ######### */
-    /* AUXILIARY FIELDS */
+    /**
+     * BACK FIELDS
+     */
 
     /**
+     * Fields to be on the back of the pass.
      * @param Field $field
      * @return $this
      */
@@ -491,11 +491,23 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
+    /**
+     * Fields to be on the back of the pass.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Field $field
+     * @return \Illuminate\Support\Collection
+     */
     public function prependBackField(Field $field) : Collection
     {
         return $this->getStructure('backFields')->prepend($field);
     }
 
+    /**
+     * Fields to be on the back of the pass.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Field $field
+     * @return self
+     */
     public function addBackField(Field $field) : self
     {
         $this->appendBackField($field);
@@ -503,14 +515,29 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
+    /**
+     * Fields to be on the back of the pass.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getBackFields() : Collection
     {
         return $this->getStructure('backFields');
     }
 
-    /* ############### */
-    /* HEADER FIELDS */
+    /**
+     * HEADER FIELDS
+     */
 
+    /**
+     * Fields to be displayed in the header on the front of the pass.
+     *
+     * Use header fields sparingly; unlike all other fields, they remain visible
+     * when a stack of passes are displayed.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Field $field
+     * @return self
+     */
     public function appendHeaderField(Field $field) : self
     {
         $this->getStructure('headerFields')->push($field);
@@ -518,11 +545,29 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
+    /**
+     * Fields to be displayed in the header on the front of the pass.
+     *
+     * Use header fields sparingly; unlike all other fields, they remain visible
+     * when a stack of passes are displayed.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Field $field
+     * @return \Illuminate\Support\Collection
+     */
     public function prependHeaderField(Field $field) : Collection
     {
         return $this->getStructure('headerFields')->prepend($field);
     }
 
+    /**
+     * Fields to be displayed in the header on the front of the pass.
+     *
+     * Use header fields sparingly; unlike all other fields, they remain visible
+     * when a stack of passes are displayed.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Field $field
+     * @return self
+     */
     public function addHeaderField(Field $field) : self
     {
         $this->appendHeaderField($field);
@@ -535,9 +580,16 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this->getStructure('headerFields');
     }
 
-    /* ############### */
-    /* PRIMARY FIELDS */
+    /**
+     * PRIMARY FIELDS
+     */
 
+    /**
+     * Fields to be displayed prominently on the front of the pass.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Field $field
+     * @return self
+     */
     public function appendPrimaryField(Field $field) : self
     {
         $this->getStructure('primaryFields')->push($field);
@@ -545,11 +597,23 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
+    /**
+     * Fields to be displayed prominently on the front of the pass.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Field $field
+     * @return \Illuminate\Support\Collection
+     */
     public function prependPrimaryField(Field $field) : Collection
     {
         return $this->getStructure('primaryFields')->prepend($field);
     }
 
+    /**
+     * Fields to be displayed prominently on the front of the pass.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Field $field
+     * @return self
+     */
     public function addPrimaryField(Field $field) : self
     {
         $this->appendPrimaryField($field);
@@ -562,9 +626,16 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this->getStructure('primaryFields');
     }
 
-    /* ############### */
-    /* SECONDARY FIELDS */
+    /**
+     * SECONDARY FIELDS
+     */
 
+    /**
+     * Fields to be displayed on the front of the pass.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Field $field
+     * @return self
+     */
     public function appendSecondaryField(Field $field) : self
     {
         $this->getStructure('secondaryFields')->push($field);
@@ -572,11 +643,23 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
+    /**
+     * Fields to be displayed on the front of the pass.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Field $field
+     * @return \Illuminate\Support\Collection
+     */
     public function prependSecondaryField(Field $field) : Collection
     {
         return $this->getStructure('secondaryFields')->prepend($field);
     }
 
+    /**
+     * Fields to be displayed on the front of the pass.
+     *
+     * @param \Thenextweb\Definitions\Dictionary\Field $field
+     * @return self
+     */
     public function addSecondaryField(Field $field) : self
     {
         $this->appendSecondaryField($field);
