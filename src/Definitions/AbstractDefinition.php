@@ -5,9 +5,8 @@ namespace Thenextweb\Definitions;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Fluent;
-use Illuminate\Validation\Factory as Validator;
-use Illuminate\Validation\ValidationException;
 use Thenextweb\Definitions\Dictionary\Beacon;
 use Thenextweb\Definitions\Dictionary\Field;
 use Thenextweb\Definitions\Dictionary\Location;
@@ -16,26 +15,19 @@ use Thenextweb\Definitions\Dictionary\Nfc;
 
 abstract class AbstractDefinition extends Fluent implements DefinitionInterface
 {
-    const TRANSIT_TYPE_AIR = 'PKTransitTypeAir';
-    const TRANSIT_TYPE_BOAT = 'PKTransitTypeBoat';
-    const TRANSIT_TYPE_BUS = 'PKTransitTypeBus';
-    const TRANSIT_TYPE_GENERIC = 'PKTransitTypeGeneric';
-    const TRANSIT_TYPE_TRAIN = 'PKTransitTypeTrain';
 
+    /** @var array */
     protected $pass = [];
 
+    /** @var int */
     protected $formatVersion = 1;
 
-    /**
-     * @var Validator
-     */
-    protected $validator;
+    /** @var string */
+    protected $style;
 
-    public function __construct($attributes = [])
+    public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-
-        $this->validator = app('validator');
 
         $this->attributes['formatVersion'] = $this->formatVersion;
 
@@ -44,91 +36,86 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         $this->attributes['teamIdentifier']     = config('passgenerator.team_identifier', '');
     }
 
-    public function setDescription($description)
+    public function setDescription(string $description) : self
     {
         $this->attributes['description'] = $description;
 
         return $this;
     }
 
-    public function setOrganizationName($organizationName)
+    public function setOrganizationName(string $organizationName) : self
     {
         $this->attributes['organizationName'] = $organizationName;
 
         return $this;
     }
 
-    public function setPassTypeIdentifier($passTypeIdentifier)
+    public function setPassTypeIdentifier(string $passTypeIdentifier) : self
     {
         $this->attributes['passTypeIdentifier'] = $passTypeIdentifier;
 
         return $this;
     }
 
-    public function setSerialNumber($serialNumber)
+    public function setSerialNumber(string $serialNumber) : self
     {
         $this->attributes['serialNumber'] = $serialNumber;
 
         return $this;
     }
 
-    public function setTeamIdentifier($teamIdentifier)
+    public function setTeamIdentifier(string $teamIdentifier) : self
     {
         $this->attributes['teamIdentifier'] = $teamIdentifier;
 
         return $this;
     }
 
-    public function setAppLaunchURL($appLaunchURL, $associatedStoreIdentifier)
+    public function setAppLaunchURL(string $appLaunchURL, array $associatedStoreIdentifier = null) : self
     {
         $this->attributes['appLaunchURL'] = $appLaunchURL;
-        $this->setAssociatedStoreIdentifier($associatedStoreIdentifier);
+        if (is_array($associatedStoreIdentifier)) {
+            $this->setAssociatedStoreIdentifier($associatedStoreIdentifier);
+        }
 
         return $this;
     }
 
-    public function setAssociatedStoreIdentifier($associatedStoreIdentifier)
+    public function setAssociatedStoreIdentifier(array $associatedStoreIdentifier) : self
     {
-        $this->attributes['associatedStoreIdentifiers'] = is_array($associatedStoreIdentifier)
-            ? $associatedStoreIdentifier
-            : [$associatedStoreIdentifier];
+        $this->attributes['associatedStoreIdentifiers'] = $associatedStoreIdentifier;
 
         return $this;
     }
 
-    public function setUserInfo(array $userInfo)
+    public function setUserInfo(array $userInfo) : self
     {
         $this->attributes['userInfo'] = $userInfo;
 
         return $this;
     }
 
-    public function setExpirationDate(Carbon $expirationDate)
+    public function setExpirationDate(Carbon $expirationDate) : self
     {
         $this->attributes['expirationDate'] = $expirationDate;
 
         return $this;
     }
 
-    public function setVoided(bool $flag)
+    public function setVoided(bool $flag) : self
     {
         $this->attributes['voided'] = $flag;
 
         return $this;
     }
 
-    public function setBeacons($beacons)
+    public function setBeacons(Collection $beacons) : self
     {
-        if ($beacons instanceof Collection) {
-            $this->attributes['beacons'] = $beacons;
-        } elseif ($beacons instanceof Beacon) {
-            $this->attributes['beacons'] = collect([$beacons]);
-        } else {
-            throw new \BadMethodCallException('Argument for setBeacons must be a Beacon object or a collection of Beacon objects');
-        }
+        $this->attributes['beacons'] = $beacons;
+        return $this;
     }
 
-    public function addBeacon(Beacon $beacon)
+    public function addBeacon(Beacon $beacon) : self
     {
         if (!array_key_exists('beacons', $this->attributes)) {
             $this->attributes['beacons'] = collect();
@@ -139,18 +126,13 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
-    public function setLocations($locations)
+    public function setLocations(Collection $locations) : self
     {
-        if ($locations instanceof Collection) {
-            $this->attributes['locations'] = $locations;
-        } elseif ($locations instanceof Location) {
-            $this->attributes['locations'] = collect([$locations]);
-        } else {
-            throw new \BadMethodCallException('Argument for setLocations must be a Location object or a collection of Location objects');
-        }
+        $this->attributes['locations'] = $locations;
+        return $this;
     }
 
-    public function addLocation(Location $location)
+    public function addLocation(Location $location) : self
     {
         if (!array_key_exists('locations', $this->attributes)) {
             $this->attributes['locations'] = collect();
@@ -161,14 +143,20 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
-    public function setMaxDistance($maxDistance)
+    /**
+     * Undocumented function
+     *
+     * @param int $maxDistance
+     * @return self
+     */
+    public function setMaxDistance(int $maxDistance) : self
     {
         $this->attributes['maxDistance'] = $maxDistance;
 
         return $this;
     }
 
-    public function setRelevantDate(Carbon $relevantDate)
+    public function setRelevantDate(Carbon $relevantDate) : self
     {
         $this->attributes['relevantDate'] = $relevantDate;
 
@@ -178,26 +166,23 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
     /**
      * For iOS 8 and earlier
      *
-     * @param Barcode $barcode
+     * @param \Thenextweb\Definitions\Dictionary\Barcode $barcode
      * @deprecated Use addBarcode instead for iOS 9 and later
      */
-    public function setBarcode(Barcode $barcode)
+    public function setBarcode(Barcode $barcode) : self
     {
         $this->attributes['barcode'] = $barcode;
+
+        return $this;
     }
 
-    public function setBarcodes($barcodes)
+    public function setBarcodes(Collection $barcodes) : self
     {
-        if ($barcodes instanceof Collection) {
-            $this->attributes['barcodes'] = $barcodes;
-        } elseif ($barcodes instanceof Barcode) {
-            $this->attributes['barcodes'] = collect([$barcodes]);
-        } else {
-            throw new \BadMethodCallException('Argument for setBarcodes must be a Barcode object or a collection of Barcode objects');
-        }
+        $this->attributes['barcodes'] = $barcodes;
+        return $this;
     }
 
-    public function addBarcode(Barcode $barcode)
+    public function addBarcode(Barcode $barcode) : self
     {
         if (!array_key_exists('barcodes', $this->attributes)) {
             $this->attributes['barcodes'] = collect();
@@ -208,14 +193,14 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this;
     }
 
-    public function setBackgroundColor($color)
+    public function setBackgroundColor(string $color) : self
     {
         $this->attributes['backgroundColor'] = $color;
 
         return $this;
     }
 
-    public function setForegroundColor($foregroundColor)
+    public function setForegroundColor(string $foregroundColor) : self
     {
         $this->attributes['foregroundColor'] = $foregroundColor;
 
@@ -225,46 +210,46 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
     /**
      * Valid for Event Tickets and Boarding Passes ONLY
      *
-     * @param $groupingIdentifier
-     * @return $this
+     * @param string $groupingIdentifier
+     * @return self
      */
-    public function setGroupingIdentifier($groupingIdentifier)
+    public function setGroupingIdentifier(string $groupingIdentifier) : self
     {
         $this->attributes['groupingIdentifier'] = $groupingIdentifier;
 
         return $this;
     }
 
-    public function setLabelColor($labelColor)
+    public function setLabelColor(string $labelColor) : self
     {
         $this->attributes['labelColor'] = $labelColor;
 
         return $this;
     }
 
-    public function setLogoText($logoText)
+    public function setLogoText(string $logoText) : self
     {
         $this->attributes['logoText'] = $logoText;
 
         return $this;
     }
 
-    public function setSuppressStripShine(bool $flag)
+    public function setSuppressStripShine(bool $flag) : self
     {
         $this->attributes['suppressStripShine'] = $flag;
 
         return $this;
     }
 
-    public function setWebService($webServiceURL, $authenticationToken)
+    public function setWebService(string $webServiceURL, string $authenticationToken) : self
     {
-        $this->attributes['authenticationToken'] = $authenticationToken;
         $this->attributes['webServiceURL'] = $webServiceURL;
+        $this->attributes['authenticationToken'] = $authenticationToken;
 
         return $this;
     }
 
-    public function setNfc(Nfc $nfc)
+    public function setNfc(Nfc $nfc) : self
     {
         $this->attributes['nfc'] = $nfc;
 
@@ -278,24 +263,24 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param Field $field
      * @return $this
      */
-    public function appendAuxiliaryField(Field $field)
+    public function appendAuxiliaryField(Field $field) : self
     {
         $this->getStructure('auxiliaryFields')->push($field);
 
         return $this;
     }
 
-    public function prependAuxiliaryField(Field $field)
+    public function prependAuxiliaryField(Field $field) : Collection
     {
         return $this->getStructure('auxiliaryFields')->prepend($field);
     }
 
-    public function addAuxiliaryField(Field $field)
+    public function addAuxiliaryField(Field $field) : self
     {
         return $this->appendAuxiliaryField($field);
     }
 
-    public function getAuxiliaryFields()
+    public function getAuxiliaryFields() : Collection
     {
         return $this->getStructure('auxiliaryFields');
     }
@@ -307,26 +292,26 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param Field $field
      * @return $this
      */
-    public function appendBackField(Field $field)
+    public function appendBackField(Field $field) : self
     {
         $this->getStructure('backFields')->push($field);
 
         return $this;
     }
 
-    public function prependBackField(Field $field)
+    public function prependBackField(Field $field) : Collection
     {
         return $this->getStructure('backFields')->prepend($field);
     }
 
-    public function addBackField(Field $field)
+    public function addBackField(Field $field) : self
     {
         $this->appendBackField($field);
 
         return $this;
     }
 
-    public function getBackFields()
+    public function getBackFields() : Collection
     {
         return $this->getStructure('backFields');
     }
@@ -334,26 +319,26 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
     /* ############### */
     /* HEADER FIELDS */
 
-    public function appendHeaderField(Field $field)
+    public function appendHeaderField(Field $field) : self
     {
         $this->getStructure('headerFields')->push($field);
 
         return $this;
     }
 
-    public function prependHeaderField(Field $field)
+    public function prependHeaderField(Field $field) : Collection
     {
         return $this->getStructure('headerFields')->prepend($field);
     }
 
-    public function addHeaderField(Field $field)
+    public function addHeaderField(Field $field) : self
     {
         $this->appendHeaderField($field);
 
         return $this;
     }
 
-    public function getHeaderFields()
+    public function getHeaderFields() : Collection
     {
         return $this->getStructure('headerFields');
     }
@@ -361,26 +346,26 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
     /* ############### */
     /* PRIMARY FIELDS */
 
-    public function appendPrimaryField(Field $field)
+    public function appendPrimaryField(Field $field) : self
     {
         $this->getStructure('primaryFields')->push($field);
 
         return $this;
     }
 
-    public function prependPrimaryField(Field $field)
+    public function prependPrimaryField(Field $field) : Collection
     {
         return $this->getStructure('primaryFields')->prepend($field);
     }
 
-    public function addPrimaryField(Field $field)
+    public function addPrimaryField(Field $field) : self
     {
         $this->appendPrimaryField($field);
 
         return $this;
     }
 
-    public function getPrimaryFields()
+    public function getPrimaryFields() : Collection
     {
         return $this->getStructure('primaryFields');
     }
@@ -388,42 +373,35 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
     /* ############### */
     /* SECONDARY FIELDS */
 
-    public function appendSecondaryField(Field $field)
+    public function appendSecondaryField(Field $field) : self
     {
         $this->getStructure('secondaryFields')->push($field);
 
         return $this;
     }
 
-    public function prependSecondaryField(Field $field)
+    public function prependSecondaryField(Field $field) : Collection
     {
         return $this->getStructure('secondaryFields')->prepend($field);
     }
 
-    public function addSecondaryField(Field $field)
+    public function addSecondaryField(Field $field) : self
     {
         $this->appendSecondaryField($field);
 
         return $this;
     }
 
-    public function getSecondaryFields()
+    public function getSecondaryFields() : Collection
     {
         return $this->getStructure('secondaryFields');
     }
 
-    public function setTransitType($transitType)
-    {
-        $this->attributes['transitType'] = $transitType;
-
-        return $this;
-    }
-
     /**
-     * @param $structure
-     * @return mixed
+     * @param string $structure
+     * @return \Illuminate\Support\Collection
      */
-    protected function getStructure($structure)
+    protected function getStructure($structure) : Collection
     {
         if (!array_key_exists('structure', $this->attributes)) {
             $this->attributes['structure'] = [];
@@ -436,19 +414,24 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $this->attributes['structure'][$structure];
     }
 
-    public function getPassDefinition()
+    /**
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     * @return array
+     */
+    public function getPassDefinition() : array
     {
-        $array = $this->toArray();
+        $definition = $this->toArray();
 
-        $this->validate($array);
+        Validator::make($definition, $this->rules())->validate();
 
-        return $array;
+        return $definition;
     }
 
     /**
      * Returns an array representation of the definition compatible with PassKit Package Format
      */
-    public function toArray()
+    public function toArray() : array
     {
         $data = array_map(function ($value) {
             return $value instanceof Arrayable ? $value->toArray() : $value;
@@ -484,16 +467,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $data;
     }
 
-    protected function validate($data)
-    {
-        try {
-            $this->validator->make($data, $this->rules())->validate();
-        } catch (ValidationException $e) {
-            dd($e->validator->getMessageBag()->toArray());
-        }
-    }
-
-    public function rules()
+    public function rules() : array
     {
         return [
             'description' => 'required',

@@ -8,6 +8,8 @@
 
 namespace Thenextweb\Definitions\Dictionary;
 
+use InvalidArgumentException;
+
 class Number extends Field
 {
     const STYLE_DECIMAL = 'PKNumberStyleDecimal';
@@ -15,11 +17,20 @@ class Number extends Field
     const STYLE_SCIENTIFIC = 'PKNumberStyleScientific';
     const STYLE_SPELLOUT = 'PKNumberStyleSpellOut';
 
+    /** @var array<string> */
+    private $validNumberStyles = [
+        self::STYLE_DECIMAL,
+        self::STYLE_PERCENT,
+        self::STYLE_SCIENTIFIC,
+        self::STYLE_SPELLOUT,
+    ];
+
     /**
-     * @param $currencyCode
-     * @return $this
+     * ISO 4217 currency code for the field’s value.
+     * @param string $currencyCode
+     * @return self
      */
-    public function setCurrencyCode($currencyCode)
+    public function setCurrencyCode(string $currencyCode) : self
     {
         $this->attributes['currencyCode'] = $currencyCode;
 
@@ -27,13 +38,21 @@ class Number extends Field
     }
 
     /**
-     * @param $numberStyle
-     * @return $this
+     * Style of number to display. Must be one of the class constants.
+     * @param string $numberStyle
+     * @throws \InvalidArgumentException
+     * @return self
      */
-    public function setNumberStyle($numberStyle)
+    public function setNumberStyle(string $numberStyle) : self
     {
+        if (!in_array($numberStyle, $this->validNumberStyles)) {
+            throw new InvalidArgumentException("Invalid number style: $numberStyle");
+        }
+
         $this->attributes['numberStyle'] = $numberStyle;
 
         return $this;
     }
+
+
 }

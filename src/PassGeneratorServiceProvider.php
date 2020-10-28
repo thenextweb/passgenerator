@@ -16,7 +16,7 @@ class PassGeneratorServiceProvider extends ServiceProvider
     /**
      * The commands to be registered from the package.
      *
-     * @var array
+     * @var array<string>
      */
     protected $commands = [
     ];
@@ -54,7 +54,7 @@ class PassGeneratorServiceProvider extends ServiceProvider
      *
      * http://stagerightlabs.com/blog/laravel5-pacakge-development-service-provider
      */
-    private function setupConfig()
+    private function setupConfig() : void
     {
         //This will merge the 'default' values from the original config file of the package
         // with the values of the "published" config file (in case the config files were not published)
@@ -66,7 +66,7 @@ class PassGeneratorServiceProvider extends ServiceProvider
     /**
      * Publish all the package's config files to the app.
      */
-    private function publishAllConfigs()
+    private function publishAllConfigs() : void
     {
         $this->publishes([
             realpath(__DIR__ . '/../config/passgenerator.php') => config_path('passgenerator.php'),

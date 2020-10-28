@@ -12,24 +12,46 @@ use Illuminate\Support\Fluent;
 
 class Nfc extends Fluent
 {
-    public function __construct($message, $encryptionPublicKey = '')
+    /**
+     * @param string $message The payload to be transmitted to the Apple Pay terminal.
+     *                        Must be 64 bytes or less.
+     *                        Messages longer than 64 bytes are truncated by the system.
+     * @param string $encryptionPublicKey The public encryption key used by the
+     *                                    Value Added Services protocol. Use a Base64 encoded X.509
+     *                                    SubjectPublicKeyInfo structure containing a ECDH public key
+     *                                    for group P256.
+     */
+    public function __construct(string $message, string $encryptionPublicKey = null)
     {
-        $this->attributes['message'] = $message;
-        if (!empty($encryptionPublicKey)) {
-            $this->attributes['encryptionPublicKey'] = $encryptionPublicKey;
+        $attributes = compact('message');
+        if (!is_null($encryptionPublicKey)) {
+            $attributes['encryptionPublicKey'] = $encryptionPublicKey;
         }
-
-        return $this;
+        parent::__construct($attributes);
     }
 
-    public function setMessage($message)
+    /**
+     * The payload to be transmitted to the Apple Pay terminal. Must be 64 bytes
+     * or less. Messages longer than 64 bytes are truncated by the system.
+     * @param string $message
+     * @return self
+     */
+    public function setMessage(string $message) : self
     {
         $this->attributes['message'] = $message;
 
         return $this;
     }
 
-    public function setEncryptionPublicKey($encryptionPublicKey)
+    /**
+     * The public encryption key used by the Value Added Services protocol.
+     * Use a Base64 encoded X.509 SubjectPublicKeyInfo structure containing a
+     * ECDH public key for group P256.
+     *
+     * @param string $encryptionPublicKey
+     * @return self
+     */
+    public function setEncryptionPublicKey(string $encryptionPublicKey) : self
     {
         $this->attributes['encryptionPublicKey'] = $encryptionPublicKey;
 

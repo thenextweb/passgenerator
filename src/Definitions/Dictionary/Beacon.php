@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Jean Rumeau
- * Date: 13/09/2017
- * Time: 22:24
- */
 
 namespace Thenextweb\Definitions\Dictionary;
 
@@ -12,11 +6,20 @@ use Illuminate\Support\Fluent;
 
 class Beacon extends Fluent
 {
+    public function __construct(string $proximityUUID, int $minor = null, int $major = null, string $relevantText = null)
+    {
+        $data = compact('proximityUUID', 'minor', 'major', 'relevantText');
+        $attributes = collect($data)->filter()->toArray();
+        parent::__construct($attributes);
+    }
+
     /**
-     * @param $major
-     * @return $this
+     * Major identifier of a Bluetooth Low Energy location beacon.
+     *
+     * @param int $major 16-bit unsigned integer
+     * @return self
      */
-    public function setMajor($major)
+    public function setMajor(int $major)
     {
         $this->attributes['major'] = $major;
 
@@ -24,10 +27,12 @@ class Beacon extends Fluent
     }
 
     /**
-     * @param $minor
-     * @return $this
+     * Minor identifier of a Bluetooth Low Energy location beacon
+     *
+     * @param int $minor 16-bit unsigned integer
+     * @return self
      */
-    public function setMinor($minor)
+    public function setMinor(int $minor)
     {
         $this->attributes['minor'] = $minor;
 
@@ -35,10 +40,12 @@ class Beacon extends Fluent
     }
 
     /**
-     * @param $proximityUUID
-     * @return $this
+     * Unique identifier of a Bluetooth Low Energy location beacon.
+     *
+     * @param string $proximityUUID
+     * @return self
      */
-    public function setProximityUUID($proximityUUID)
+    public function setProximityUUID(string $proximityUUID)
     {
         $this->attributes['proximityUUID'] = $proximityUUID;
 
@@ -46,10 +53,14 @@ class Beacon extends Fluent
     }
 
     /**
-     * @param $relevantText
-     * @return $this
+     * Text displayed on the lock screen when the pass is currently relevant.
+     * For example, a description of the nearby location such as
+     * “Store nearby on 1st and Main.”
+     *
+     * @param string $relevantText
+     * @return self
      */
-    public function setRelevantText($relevantText)
+    public function setRelevantText(string $relevantText)
     {
         $this->attributes['relevantText'] = $relevantText;
 

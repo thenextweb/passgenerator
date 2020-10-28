@@ -12,26 +12,31 @@ class PassGenerator
 {
     /**
      * The store with the pass ID certificate.
+     * @var string
      */
     private $certStore;
 
     /**
      * The password to unlock the certificate store.
+     * @var string
      */
     private $certStorePassword;
 
     /**
      * Path to the Apple Worldwide Developer Relations Intermediate Certificate.
+     * @var string
      */
     private $wwdrCertPath;
 
     /**
      * The JSON definition for the pass (pass.json).
+     * @var string
      */
     private $passJson;
 
     /**
      * All the assets (images) to be included on the pass.
+     * @var array
      */
     private $assets = [];
 
@@ -48,24 +53,30 @@ class PassGenerator
     /**
      * Filename for the pass. If provided, it'll be the pass_id with .pkpass
      * extension, otherwise a random name will be assigned.
+     * @var string
      */
     private $passFilename;
 
     /**
      * Relative path to the pass on its temp folder.
+     * @var string
      */
     private $passRelativePath;
 
     /**
      * Real path to the pass on its temp folder.
+     * @var string
      */
     private $passRealPath;
 
     /**
      * Some file names as defined by Apple.
      */
+    /** @var string */
     private $signatureFilename = 'signature';
+    /** @var string */
     private $manifestFilename = 'manifest.json';
+    /** @var string */
     private $passJsonFilename = 'pass.json';
 
     /**
@@ -189,7 +200,7 @@ class PassGenerator
     /**
      * Set the pass definition with an array.
      *
-     * @param array $definition
+     * @param \Thenextweb\Definitions\DefinitionInterface|array $definition
      *
      * @throws InvalidArgumentException
      *
@@ -217,7 +228,7 @@ class PassGenerator
      *
      * @return void
      */
-    public function setPassDefinitionJson($jsonDefinition)
+    public function setPassDefinitionJson(string $jsonDefinition)
     {
         if (!json_decode($jsonDefinition)) {
             throw new InvalidArgumentException('An invalid JSON Pass definition was provided.');
@@ -262,7 +273,7 @@ class PassGenerator
      *
      * @return string|bool If exists, the content of the pass.
      */
-    public static function getPass($passId)
+    public static function getPass(string $passId)
     {
         if (Storage::disk('passgenerator')->has($passId . '.pkpass')) {
             return Storage::disk('passgenerator')->get($passId . '.pkpass');
@@ -278,7 +289,7 @@ class PassGenerator
      *
      * @return string|bool
      */
-    public function getPassFilePath($passId)
+    public function getPassFilePath(string $passId)
     {
         if (Storage::disk('passgenerator')->has($passId . '.pkpass')) {
             return $this->passRealPath . '/../' . $this->passFilename;
@@ -292,15 +303,17 @@ class PassGenerator
      *
      * @return string
      */
-    public static function getPassMimeType()
+    public static function getPassMimeType() : string
     {
         return 'application/vnd.apple.pkpass';
     }
 
     /**
      * Create the JSON manifest with all the hashes from the included files.
+     *
+     * @return string
      */
-    private function createJsonManifest()
+    private function createJsonManifest() : string
     {
         $hashes['pass.json'] = sha1($this->passJson);
 
@@ -321,13 +334,13 @@ class PassGenerator
     /**
      * Remove all the MIME and email crap around the DER signature and decode it from base64.
      *
-     * @param $emailSignature
+     * @param string $emailSignature
      *
      * @return string A clean DER signature
      *
      * @internal param string $signature The returned result of openssl_pkcs7_sign()
      */
-    private function removeMimeBS($emailSignature)
+    private function removeMimeBS(string $emailSignature) : string
     {
         $lastHeaderLine = 'Content-Disposition: attachment; filename="smime.p7s"';
 
@@ -359,7 +372,7 @@ class PassGenerator
      *
      * @throws RuntimeException
      */
-    private function signManifest()
+    private function signManifest() : void
     {
         $manifestPath = $this->passRealPath . '/' . $this->manifestFilename;
 
@@ -403,7 +416,7 @@ class PassGenerator
      *
      * @throws RuntimeException
      */
-    private function zipItAll()
+    private function zipItAll() : void
     {
         $zipPath = $this->passRealPath . '/' . $this->passFilename;
 
@@ -437,7 +450,7 @@ class PassGenerator
     /*
      * Create a temporary folder to store all files before creating the pass.
      */
-    private function createTempFolder()
+    private function createTempFolder() : void
     {
         if (!is_dir($this->passRealPath)) {
             Storage::disk('passgenerator')->makeDirectory($this->passRelativePath);

@@ -13,5 +13,5 @@ interface DefinitionInterface
     /**
      * @return array
      */
-    public function getPassDefinition();
+    public function getPassDefinition() : array;
 }
