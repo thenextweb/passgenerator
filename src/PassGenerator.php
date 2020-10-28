@@ -91,7 +91,7 @@ class PassGenerator
         $certPath = config('passgenerator.certificate_store_path');
 
         if (is_file($certPath)) {
-            $this->certStore = file_get_contents($certPath);
+            $this->certStore = \Safe\file_get_contents($certPath);
         } else {
             throw new InvalidArgumentException(
                 'No certificate found on ' . $certPath
@@ -104,7 +104,7 @@ class PassGenerator
         // Set WWDR certificate
         $wwdrCertPath = config('passgenerator.wwdr_certificate_path');
 
-        if (is_file($wwdrCertPath) && @openssl_x509_read(file_get_contents($wwdrCertPath))) {
+        if (is_file($wwdrCertPath) && @\Safe\openssl_x509_read(\Safe\file_get_contents($wwdrCertPath))) {
             $this->wwdrCertPath = $wwdrCertPath;
         } else {
             $errorMsg = 'No valid intermediate certificate was found on ' . $wwdrCertPath . PHP_EOL;
@@ -216,7 +216,7 @@ class PassGenerator
             throw new InvalidArgumentException('An invalid Pass definition was provided.');
         }
 
-        $this->passJson = json_encode($definition);
+        $this->passJson = \Safe\json_encode($definition);
     }
 
     /**
@@ -230,7 +230,7 @@ class PassGenerator
      */
     public function setPassDefinitionJson(string $jsonDefinition)
     {
-        if (!json_decode($jsonDefinition)) {
+        if (!\Safe\json_decode($jsonDefinition)) {
             throw new InvalidArgumentException('An invalid JSON Pass definition was provided.');
         }
 
@@ -318,7 +318,7 @@ class PassGenerator
         $hashes['pass.json'] = sha1($this->passJson);
 
         foreach ($this->assets as $filename => $path) {
-            $hashes[$filename] = sha1(file_get_contents($path));
+            $hashes[$filename] = sha1(\Safe\file_get_contents($path));
         }
 
 //      // TODO: Add support for localization
@@ -328,7 +328,7 @@ class PassGenerator
 //             }
 //         }
 
-        return json_encode((object) $hashes);
+        return \Safe\json_encode((object) $hashes);
     }
 
     /**
@@ -359,7 +359,7 @@ class PassGenerator
         // Clean and decode
         $cleanSignature = trim($cleanSignature);
 
-        return base64_decode($cleanSignature);
+        return \Safe\base64_decode($cleanSignature);
     }
 
     /**
@@ -380,18 +380,18 @@ class PassGenerator
 
         $certs = [];
 
-        if (!openssl_pkcs12_read($this->certStore, $certs, $this->certStorePassword)) {
+        if (!\Safe\openssl_pkcs12_read($this->certStore, $certs, $this->certStorePassword)) {
             throw new RuntimeException('The certificate could not be read.');
         }
 
         // Get the certificate resource
-        $certResource = openssl_x509_read($certs['cert']);
+        $certResource = \Safe\openssl_x509_read($certs['cert']);
 
         // Get the private key out of the cert
-        $privateKey = openssl_pkey_get_private($certs['pkey'], $this->certStorePassword);
+        $privateKey = \Safe\openssl_pkey_get_private($certs['pkey'], $this->certStorePassword);
 
         // Sign the manifest and store int in the signature file
-        openssl_pkcs7_sign(
+        \Safe\openssl_pkcs7_sign(
             $manifestPath,
             $signaturePath,
             $certResource,

@@ -58,9 +58,9 @@ class PassGeneratorServiceProvider extends ServiceProvider
     {
         //This will merge the 'default' values from the original config file of the package
         // with the values of the "published" config file (in case the config files were not published)
-        $this->mergeConfigFrom(realpath(__DIR__ . '/../config/passgenerator.php'), 'passgenerator');
+        $this->mergeConfigFrom(\Safe\realpath(__DIR__ . '/../config/passgenerator.php'), 'passgenerator');
 
-        $this->mergeConfigFrom(realpath(__DIR__ . '/../config/pass-filesystem.php'), 'filesystems');
+        $this->mergeConfigFrom(\Safe\realpath(__DIR__ . '/../config/pass-filesystem.php'), 'filesystems');
     }
 
     /**
@@ -69,7 +69,7 @@ class PassGeneratorServiceProvider extends ServiceProvider
     private function publishAllConfigs() : void
     {
         $this->publishes([
-            realpath(__DIR__ . '/../config/passgenerator.php') => config_path('passgenerator.php'),
+            \Safe\realpath(__DIR__ . '/../config/passgenerator.php') => config_path('passgenerator.php'),
         ], 'config');
     }
 }
