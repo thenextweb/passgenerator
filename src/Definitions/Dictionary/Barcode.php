@@ -3,6 +3,7 @@
 namespace Thenextweb\Definitions\Dictionary;
 
 use Illuminate\Support\Fluent;
+use InvalidArgumentException;
 
 class Barcode extends Fluent
 {
@@ -29,7 +30,7 @@ class Barcode extends Fluent
     public function __construct(string $message, string $format, string $messageEncoding = 'iso-8859-1')
     {
         if (!in_array($format, $this->validFormats)) {
-            throw new \InvalidArgumentException('Invalid barcode format');
+            throw new InvalidArgumentException('Invalid barcode format');
         }
 
         parent::__construct(compact('message', 'format', 'messageEncoding'));
@@ -61,7 +62,7 @@ class Barcode extends Fluent
     public function setFormat(string $format) : self
     {
         if (!in_array($format, $this->validFormats)) {
-            throw new \InvalidArgumentException('Invalid barcode format');
+            throw new InvalidArgumentException('Invalid barcode format');
         }
         $this->attributes['format'] = $format;
 

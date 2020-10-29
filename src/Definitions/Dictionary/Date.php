@@ -3,6 +3,7 @@
 namespace Thenextweb\Definitions\Dictionary;
 
 use Carbon\Carbon;
+use InvalidArgumentException;
 
 class Date extends Field
 {
@@ -26,7 +27,7 @@ class Date extends Field
     public function setDateStyle(string $dateStyle)
     {
         if (!in_array($dateStyle, $this->validStyles)) {
-            throw new \InvalidArgumentException('Invalid barcode format');
+            throw new InvalidArgumentException('Invalid barcode format');
         }
 
         $this->attributes['dateStyle'] = $dateStyle;
@@ -82,7 +83,7 @@ class Date extends Field
     public function setTimeStyle($timeStyle)
     {
         if (!in_array($timeStyle, $this->validStyles)) {
-            throw new \InvalidArgumentException('Invalid barcode format');
+            throw new InvalidArgumentException('Invalid barcode format');
         }
 
         $this->attributes['timeStyle'] = $timeStyle;

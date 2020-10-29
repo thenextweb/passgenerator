@@ -15,7 +15,13 @@ return PhpCsFixer\Config::create()
         'binary_operator_spaces' => true,
         'cast_spaces' => true,
         'concat_space' => ['spacing' => 'one'],
+        'fully_qualified_strict_types' => true,
         'function_typehint_space' => true,
+        'global_namespace_import' => [
+                'import_classes' => null,
+                'import_constants' => false,
+                'import_functions' => true,
+        ],
         'include' => true,
         'indentation_type' => true,
         'linebreak_after_opening_tag' => true,
