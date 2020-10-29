@@ -5,6 +5,15 @@ namespace Thenextweb;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use RuntimeException;
+use function Safe\base64_decode;
+use Safe\Exceptions\OpensslException;
+use function Safe\file_get_contents;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\openssl_pkcs12_read;
+use function Safe\openssl_pkcs7_sign;
+use function Safe\openssl_pkey_get_private;
+use function Safe\openssl_x509_read;
 use Thenextweb\Definitions\DefinitionInterface;
 use ZipArchive;
 
@@ -91,7 +100,7 @@ class PassGenerator
         $certPath = config('passgenerator.certificate_store_path');
 
         if (is_file($certPath)) {
-            $this->certStore = \Safe\file_get_contents($certPath);
+            $this->certStore = file_get_contents($certPath);
         } else {
             throw new InvalidArgumentException(
                 'No certificate found on ' . $certPath
@@ -104,7 +113,17 @@ class PassGenerator
         // Set WWDR certificate
         $wwdrCertPath = config('passgenerator.wwdr_certificate_path');
 
-        if (is_file($wwdrCertPath) && @\Safe\openssl_x509_read(\Safe\file_get_contents($wwdrCertPath))) {
+        $validCert = false;
+        if (is_file($wwdrCertPath)) {
+            $validCert = true;
+        }
+        try {
+            openssl_x509_read(file_get_contents($wwdrCertPath));
+        } catch (OpensslException $e) {
+            $validCert = false;
+        }
+
+        if ($validCert) {
             $this->wwdrCertPath = $wwdrCertPath;
         } else {
             $errorMsg = 'No valid intermediate certificate was found on ' . $wwdrCertPath . PHP_EOL;
@@ -153,7 +172,7 @@ class PassGenerator
      *
      * @param string $assetPath
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      *
      * @return void
      */
@@ -216,7 +235,7 @@ class PassGenerator
             throw new InvalidArgumentException('An invalid Pass definition was provided.');
         }
 
-        $this->passJson = \Safe\json_encode($definition);
+        $this->passJson = json_encode($definition);
     }
 
     /**
@@ -224,15 +243,14 @@ class PassGenerator
      *
      * @param string $jsonDefinition
      *
-     * @throws InvalidArgumentException
+     * @throws \Safe\Exceptions\JsonException;
      *
      * @return void
      */
     public function setPassDefinitionJson(string $jsonDefinition)
     {
-        if (!\Safe\json_decode($jsonDefinition)) {
-            throw new InvalidArgumentException('An invalid JSON Pass definition was provided.');
-        }
+        // Test it with Safe\json_decode
+        json_decode($jsonDefinition);
 
         $this->passJson = $jsonDefinition;
     }
@@ -318,7 +336,7 @@ class PassGenerator
         $hashes['pass.json'] = sha1($this->passJson);
 
         foreach ($this->assets as $filename => $path) {
-            $hashes[$filename] = sha1(\Safe\file_get_contents($path));
+            $hashes[$filename] = sha1(file_get_contents($path));
         }
 
 //      // TODO: Add support for localization
@@ -328,7 +346,7 @@ class PassGenerator
 //             }
 //         }
 
-        return \Safe\json_encode((object) $hashes);
+        return json_encode((object) $hashes);
     }
 
     /**
@@ -359,7 +377,7 @@ class PassGenerator
         // Clean and decode
         $cleanSignature = trim($cleanSignature);
 
-        return \Safe\base64_decode($cleanSignature);
+        return base64_decode($cleanSignature);
     }
 
     /**
@@ -380,18 +398,16 @@ class PassGenerator
 
         $certs = [];
 
-        if (!\Safe\openssl_pkcs12_read($this->certStore, $certs, $this->certStorePassword)) {
-            throw new RuntimeException('The certificate could not be read.');
-        }
-
+        // Try to read the cert
+        openssl_pkcs12_read($this->certStore, $certs, $this->certStorePassword);
         // Get the certificate resource
-        $certResource = \Safe\openssl_x509_read($certs['cert']);
+        $certResource = openssl_x509_read($certs['cert']);
 
         // Get the private key out of the cert
-        $privateKey = \Safe\openssl_pkey_get_private($certs['pkey'], $this->certStorePassword);
+        $privateKey = openssl_pkey_get_private($certs['pkey'], $this->certStorePassword);
 
         // Sign the manifest and store int in the signature file
-        \Safe\openssl_pkcs7_sign(
+        openssl_pkcs7_sign(
             $manifestPath,
             $signaturePath,
             $certResource,
