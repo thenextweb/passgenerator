@@ -33,9 +33,18 @@
             "Thenextweb\\": "src"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Thenextweb\\Test\\": "tests"
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Thenextweb\\PassGeneratorServiceProvider"
+            ],
+            "aliases": {
+                "PassGenerator": "Thenextweb\\Facades\\PassGenerator"
+            }
         }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
     }
 }
