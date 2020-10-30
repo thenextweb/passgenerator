@@ -27,13 +27,13 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
 
     public function __construct(array $attributes = [])
     {
-        parent::__construct($attributes);
-
-        $this->attributes['formatVersion'] = $this->formatVersion;
-
-        $this->attributes['passTypeIdentifier'] = config('passgenerator.pass_type_identifier', '');
-        $this->attributes['organizationName'] = config('passgenerator.organization_name', '');
-        $this->attributes['teamIdentifier'] = config('passgenerator.team_identifier', '');
+        $default = [
+            'formatVersion' => $this->formatVersion,
+            'passTypeIdentifier' => config('passgenerator.pass_type_identifier', ''),
+            'organizationName' => config('passgenerator.organization_name', ''),
+            'teamIdentifier' => config('passgenerator.team_identifier', ''),
+        ];
+        parent::__construct(array_merge($default, $attributes));
     }
     /**
      * Brief description of the pass, used by the iOS accessibility technologies.
