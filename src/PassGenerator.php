@@ -152,10 +152,8 @@ class PassGenerator
             }
         }
 
-        $this->passRealPath = Storage::disk('passgenerator')
-                ->getDriver()
-                ->getAdapter()
-                ->getPathPrefix() . $this->passRelativePath;
+        $prefix = config('filesystems.disks.passgenerator.root') . '/';
+        $this->passRealPath = $prefix . $this->passRelativePath;
     }
 
     /**
