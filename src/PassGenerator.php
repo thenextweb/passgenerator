@@ -24,31 +24,31 @@ class PassGenerator
      * The store with the pass ID certificate.
      * @var string
      */
-    private $certStore;
+    private string $certStore;
 
     /**
      * The password to unlock the certificate store.
      * @var string
      */
-    private $certStorePassword;
+    private string $certStorePassword;
 
     /**
      * Path to the Apple Worldwide Developer Relations Intermediate Certificate.
      * @var string
      */
-    private $wwdrCertPath;
+    private string $wwdrCertPath;
 
     /**
      * The JSON definition for the pass (pass.json).
      * @var string
      */
-    private $passJson;
+    private string $passJson;
 
     /**
      * All the assets (images) to be included on the pass.
      * @var array
      */
-    private $assets = [];
+    private array $assets = [];
 
     /**
      * All the localized assets (strings and images).
@@ -63,31 +63,27 @@ class PassGenerator
     /**
      * Filename for the pass. If provided, it'll be the pass_id with .pkpass
      * extension, otherwise a random name will be assigned.
-     * @var string
      */
-    private $passFilename;
+    private string $passFilename;
 
     /**
      * Relative path to the pass on its temp folder.
      * @var string
      */
-    private $passRelativePath;
+    private string $passRelativePath;
 
     /**
      * Real path to the pass on its temp folder.
      * @var string
      */
-    private $passRealPath;
+    private string $passRealPath;
 
     /**
      * Some file names as defined by Apple.
      */
-    /** @var string */
-    private $signatureFilename = 'signature';
-    /** @var string */
-    private $manifestFilename = 'manifest.json';
-    /** @var string */
-    private $passJsonFilename = 'pass.json';
+    private string $signatureFilename = 'signature';
+    private string $manifestFilename = 'manifest.json';
+    private string $passJsonFilename = 'pass.json';
 
     /**
      * Constructor.
@@ -95,7 +91,7 @@ class PassGenerator
      * @param bool|string $passId          [optional] If given, it'll be used to name the pass file.
      * @param bool        $replaceExistent [optional] If true, it'll replace any existing pass with the same filename.
      */
-    public function __construct($passId = false, $replaceExistent = false)
+    public function __construct($passId = false, bool $replaceExistent = false)
     {
         // Set certificate
         $certPath = config('passgenerator.certificate_store_path');
