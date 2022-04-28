@@ -2,6 +2,7 @@
 
 namespace Thenextweb;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use RuntimeException;
@@ -152,10 +153,8 @@ class PassGenerator
             }
         }
 
-        $this->passRealPath = Storage::disk('passgenerator')
-                ->getDriver()
-                ->getAdapter()
-                ->getPathPrefix() . $this->passRelativePath;
+        $root = Arr::get(Storage::disk('passgenerator')->getConfig(), 'root', storage_path());
+        $this->passRealPath = rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->passRelativePath;
     }
 
     /**
