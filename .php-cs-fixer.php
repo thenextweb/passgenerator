@@ -3,9 +3,10 @@
 // vim: set ft=php:
 
 $finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__);
+    ->in(__DIR__ . '/src')
+    ->in(__DIR__ . '/tests');
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setUsingCache(true)
     ->setRiskyAllowed(true)
     ->setRules([
@@ -15,25 +16,19 @@ return PhpCsFixer\Config::create()
         'binary_operator_spaces' => true,
         'cast_spaces' => true,
         'concat_space' => ['spacing' => 'one'],
-        'fully_qualified_strict_types' => true,
         'function_typehint_space' => true,
-        'global_namespace_import' => [
-                'import_classes' => null,
-                'import_constants' => false,
-                'import_functions' => true,
-        ],
         'include' => true,
         'indentation_type' => true,
         'linebreak_after_opening_tag' => true,
         'new_with_braces' => true,
         'no_blank_lines_after_phpdoc' => true,
         'no_empty_statement' => true,
-        'no_extra_consecutive_blank_lines' => true,
+        'no_extra_blank_lines' => true,
         'no_multiline_whitespace_around_double_arrow' => true,
-        'no_multiline_whitespace_before_semicolons' => true,
+        'multiline_whitespace_before_semicolons' => true,
         'no_leading_namespace_whitespace' => true,
         'no_leading_import_slash' => true,
-        'no_short_echo_tag' => true,
+        'echo_tag_syntax' => ['format' => 'long'],
         'no_singleline_whitespace_before_semicolons' => true,
         'no_trailing_comma_in_list_call' => true,
         'no_trailing_comma_in_singleline_array' => true,
@@ -48,7 +43,7 @@ return PhpCsFixer\Config::create()
         'single_quote' => true,
         'standardize_not_equals' => true,
         'ternary_operator_spaces' => true,
-        'trailing_comma_in_multiline_array' => true,
+        'trailing_comma_in_multiline' => true,
         'trim_array_spaces' => true,
         'unary_operator_spaces' => true,
     ])
