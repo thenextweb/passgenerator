@@ -139,7 +139,7 @@ class PassGenerator
 
         $this->passFilename = $passId . '.pkpass';
 
-        if (Storage::disk('passgenerator')->has($this->passFilename)) {
+        if (Storage::disk('passgenerator')->exists($this->passFilename)) {
             if ($replaceExistent) {
                 Storage::disk('passgenerator')->delete($this->passFilename);
             } else {
@@ -148,8 +148,9 @@ class PassGenerator
                 );
             }
         }
-
-        $root = Arr::get(Storage::disk('passgenerator')->getConfig(), 'root', storage_path());
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('passgenerator');
+        $root = Arr::get($disk->getConfig(), 'root', storage_path());
         $this->passRealPath = rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->passRelativePath;
     }
 
@@ -288,7 +289,7 @@ class PassGenerator
      */
     public static function getPass(string $passId)
     {
-        if (Storage::disk('passgenerator')->has($passId . '.pkpass')) {
+        if (Storage::disk('passgenerator')->exists($passId . '.pkpass')) {
             return Storage::disk('passgenerator')->get($passId . '.pkpass');
         }
 
@@ -304,7 +305,7 @@ class PassGenerator
      */
     public function getPassFilePath(string $passId)
     {
-        if (Storage::disk('passgenerator')->has($passId . '.pkpass')) {
+        if (Storage::disk('passgenerator')->exists($passId . '.pkpass')) {
             return $this->passRealPath . '/../' . $this->passFilename;
         }
 
