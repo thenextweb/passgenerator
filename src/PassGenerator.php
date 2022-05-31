@@ -148,10 +148,8 @@ class PassGenerator
                 );
             }
         }
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-        $disk = Storage::disk('passgenerator');
-        $root = Arr::get($disk->getConfig(), 'root', storage_path());
-        $this->passRealPath = rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->passRelativePath;
+
+        $this->passRealPath = Storage::disk('passgenerator')->path($this->passRelativePath);
     }
 
     /**
