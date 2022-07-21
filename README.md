@@ -1,6 +1,6 @@
 # Passgenerator
 
-Passgenerator is a Laravel5+ package that allows you to easily create passes compatible with Apple Wallet (former Passbook).
+Passgenerator is a Laravel7+ package that allows you to easily create passes compatible with Apple Wallet (former Passbook).
 
 # 👉 Table of Contents 👈
 * [👮 Requirements](#-requirements)
@@ -11,7 +11,7 @@ Passgenerator is a Laravel5+ package that allows you to easily create passes com
 
 ## 👮 Requirements
 
-Only things needed are Laravel 6+ and to have the [PHP Zip extension](http://php.net/manual/en/book.zip.php) installed and enabled.
+Only things needed are Laravel 7+ and to have the [PHP Zip extension](http://php.net/manual/en/book.zip.php) installed and enabled.
 
 ## 💾 Installation
 The best and easiest way o install the package is using the [Composer](https://getcomposer.org/) package manager. To do so, run this command in your project root:
