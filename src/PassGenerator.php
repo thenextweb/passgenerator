@@ -165,19 +165,23 @@ class PassGenerator
      * Add an asset to the pass. Use this function to add images to the pass.
      *
      * @param string $assetPath
+     * @param string $name
      *
      * @throws \InvalidArgumentException
      *
      * @return void
      */
-    public function addAsset($assetPath)
+    public function addAsset($assetPath, $name = null)
     {
         if (is_file($assetPath)) {
-            $this->assets[basename($assetPath)] = $assetPath;
-
+            if(empty($name)) {
+                $this->assets[basename($assetPath)] = $assetPath;
+            } else {
+                $this->assets[$name] = $assetPath;
+            }
             return;
         }
-
+        
         throw new InvalidArgumentException("The file $assetPath does NOT exist");
     }
 
