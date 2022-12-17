@@ -14,7 +14,7 @@ Passgenerator is a Laravel7+ package that allows you to easily create passes com
 Only things needed are Laravel 7+ and to have the [PHP Zip extension](http://php.net/manual/en/book.zip.php) installed and enabled.
 
 ## 💾 Installation
-The best and easiest way o install the package is using the [Composer](https://getcomposer.org/) package manager. To do so, run this command in your project root:
+The best and easiest way to install the package is using the [Composer](https://getcomposer.org/) package manager. To do so, run this command in your project root:
 
 ```sh
 composer require thenextweb/passgenerator
