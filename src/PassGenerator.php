@@ -90,6 +90,8 @@ class PassGenerator
      *
      * @param bool|string $passId          [optional] If given, it'll be used to name the pass file.
      * @param bool        $replaceExistent [optional] If true, it'll replace any existing pass with the same filename.
+     *
+     * @throws InvalidArgumentException|RuntimeException
      */
     public function __construct($passId = false, bool $replaceExistent = false)
     {
