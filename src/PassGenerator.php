@@ -310,7 +310,7 @@ class PassGenerator
     public function getPassFilePath(string $passId)
     {
         if (Storage::disk('passgenerator')->exists($passId . '.pkpass')) {
-            return $this->passRealPath . '/../' . $this->passFilename;
+            return Storage::disk('passgenerator')->path($passId . '.pkpass');
         }
 
         return false;
