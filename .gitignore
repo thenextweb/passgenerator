@@ -3,3 +3,4 @@
 .env
 *.diff
 *kdev4
+.idea

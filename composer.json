@@ -19,15 +19,15 @@
         "ext-zip": "*",
         "illuminate/support": "^7.0|^8.0|^9.0|^10.0|^11.0",
         "illuminate/filesystem": "^7.0|^8.0|^9.0|^10.0|^11.0",
-        "thecodingmachine/safe": "^2.1"
+        "thecodingmachine/safe": "^3.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.2",
         "orchestra/testbench": "^5.0|^6.0|^7.0|^8.0|^9.0",
-        "phpstan/phpstan": "^1.6",
+        "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^9.3|^10.0",
-        "rector/rector": "^0.12|^0.15",
-        "thecodingmachine/phpstan-safe-rule": "^1.2"
+        "rector/rector": "^2.0",
+        "thecodingmachine/phpstan-safe-rule": "^1.4"
     },
     "autoload": {
         "psr-4": {
@@ -46,6 +46,9 @@
     },
     "config": {
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "platform": {
+            "php": "8.4.0"
+        }
     }
 }
