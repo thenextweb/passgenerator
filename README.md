@@ -1,6 +1,6 @@
 # Passgenerator
 
-Passgenerator is a Laravel7+ package that allows you to easily create passes compatible with Apple Wallet (former Passbook).
+Passgenerator is a Laravel 7–12 package that allows you to easily create passes compatible with Apple Wallet (former Passbook).
 
 # 👉 Table of Contents 👈
 * [👮 Requirements](#-requirements)
@@ -11,7 +11,7 @@ Passgenerator is a Laravel7+ package that allows you to easily create passes com
 
 ## 👮 Requirements
 
-Only things needed are Laravel 7+ and to have the [PHP Zip extension](http://php.net/manual/en/book.zip.php) installed and enabled.
+Only things needed are Laravel 7 or newer (including Laravel 12) and to have the [PHP Zip extension](http://php.net/manual/en/book.zip.php) installed and enabled.
 
 ## 💾 Installation
 The best and easiest way to install the package is using the [Composer](https://getcomposer.org/) package manager. To do so, run this command in your project root:
@@ -20,14 +20,11 @@ The best and easiest way to install the package is using the [Composer](https://
 composer require thenextweb/passgenerator
 ```
 
-Then, add the `Thenextweb\PassGeneratorServiceProvider` provider to the providers array in `config/app.php`:
+The package registers itself automatically via Laravel package discovery.
 
-```php
-'providers' => [
-// ...
-    Thenextweb\PassGeneratorServiceProvider::class,
-],
-```
+If discovery is disabled, register the provider manually:
+- **Laravel 11/12**: add `Thenextweb\PassGeneratorServiceProvider::class` to `bootstrap/providers.php`
+- **Laravel 7–10**: add it to the `providers` array in `config/app.php`
 
 That's it!
 
@@ -62,7 +59,7 @@ In case there is a reason the config file must be modified (conflicting env keys
 
 ```sh
 // file will be at config/passgenerator.php
-php artisan vendor:publish --provider="Thenextweb\PassGeneratorServiceProvider"
+php artisan vendor:publish --tag=passgenerator-config
 ```
 
 ## 🚀 Usage
