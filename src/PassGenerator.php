@@ -5,16 +5,8 @@ namespace Thenextweb;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
+use JsonException;
 use RuntimeException;
-use function Safe\base64_decode;
-use Safe\Exceptions\OpensslException;
-use function Safe\file_get_contents;
-use function Safe\json_decode;
-use function Safe\json_encode;
-use function Safe\openssl_pkcs12_read;
-use function Safe\openssl_pkcs7_sign;
-use function Safe\openssl_pkey_get_private;
-use function Safe\openssl_x509_read;
 use Thenextweb\Definitions\DefinitionInterface;
 use ZipArchive;
 
@@ -114,12 +106,10 @@ class PassGenerator
 
         $validCert = false;
         if (is_file($wwdrCertPath)) {
-            $validCert = true;
-        }
-        try {
-            openssl_x509_read(file_get_contents($wwdrCertPath));
-        } catch (OpensslException $e) {
-            $validCert = false;
+            $certContent = file_get_contents($wwdrCertPath);
+            if ($certContent !== false && openssl_x509_read($certContent) !== false) {
+                $validCert = true;
+            }
         }
 
         if ($validCert) {
@@ -176,14 +166,14 @@ class PassGenerator
     public function addAsset($assetPath, $name = null)
     {
         if (is_file($assetPath)) {
-            if(empty($name)) {
+            if (empty($name)) {
                 $this->assets[basename($assetPath)] = $assetPath;
             } else {
                 $this->assets[$name] = $assetPath;
             }
             return;
         }
-        
+
         throw new InvalidArgumentException("The file $assetPath does NOT exist");
     }
 
@@ -205,7 +195,7 @@ class PassGenerator
     {
         throw new RuntimeException('Not implemented yet');
 
-//        if (!is_file($assetPath)) {
+        //        if (!is_file($assetPath)) {
 //            throw new InvalidArgumentException("The file $assetPath does NOT exist");
 //        }
 //
@@ -235,7 +225,7 @@ class PassGenerator
             throw new InvalidArgumentException('An invalid Pass definition was provided.');
         }
 
-        $this->passJson = json_encode($definition);
+        $this->passJson = json_encode($definition, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -243,14 +233,13 @@ class PassGenerator
      *
      * @param string $jsonDefinition
      *
-     * @throws \Safe\Exceptions\JsonException;
+     * @throws JsonException
      *
      * @return void
      */
     public function setPassDefinitionJson(string $jsonDefinition)
     {
-        // Test it with Safe\json_decode
-        json_decode($jsonDefinition);
+        json_decode($jsonDefinition, flags: JSON_THROW_ON_ERROR);
 
         $this->passJson = $jsonDefinition;
     }
@@ -321,7 +310,7 @@ class PassGenerator
      *
      * @return string
      */
-    public static function getPassMimeType() : string
+    public static function getPassMimeType(): string
     {
         return 'application/vnd.apple.pkpass';
     }
@@ -331,22 +320,26 @@ class PassGenerator
      *
      * @return string
      */
-    private function createJsonManifest() : string
+    private function createJsonManifest(): string
     {
         $hashes['pass.json'] = sha1($this->passJson);
 
         foreach ($this->assets as $filename => $path) {
-            $hashes[$filename] = sha1(file_get_contents($path));
+            $content = file_get_contents($path);
+            if ($content === false) {
+                throw new RuntimeException("Could not read asset file: $path");
+            }
+            $hashes[$filename] = sha1($content);
         }
 
-//      // TODO: Add support for localization
+        //      // TODO: Add support for localization
 //         foreach($this->localizations as $localization) {
 //             foreach($this->localizedAssets[$localization] as $filename => $path) {
 //                 $hashes[$filename] = sha1(file_get_contents($path));
 //             }
 //         }
 
-        return json_encode((object) $hashes);
+        return json_encode((object) $hashes, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -358,7 +351,7 @@ class PassGenerator
      *
      * @internal param string $signature The returned result of openssl_pkcs7_sign()
      */
-    private function removeMimeBS(string $emailSignature) : string
+    private function removeMimeBS(string $emailSignature): string
     {
         $lastHeaderLine = 'Content-Disposition: attachment; filename="smime.p7s"';
 
@@ -377,7 +370,12 @@ class PassGenerator
         // Clean and decode
         $cleanSignature = trim($cleanSignature);
 
-        return base64_decode($cleanSignature);
+        $decoded = base64_decode($cleanSignature, true);
+        if ($decoded === false) {
+            throw new RuntimeException('Failed to decode base64 signature');
+        }
+
+        return $decoded;
     }
 
     /**
@@ -390,7 +388,7 @@ class PassGenerator
      *
      * @throws RuntimeException
      */
-    private function signManifest() : void
+    private function signManifest(): void
     {
         $manifestPath = $this->passRealPath . '/' . $this->manifestFilename;
 
@@ -398,24 +396,33 @@ class PassGenerator
 
         $certs = [];
 
-        // Try to read the cert
-        openssl_pkcs12_read($this->certStore, $certs, $this->certStorePassword);
-        // Get the certificate resource
+        if (!openssl_pkcs12_read($this->certStore, $certs, $this->certStorePassword)) {
+            throw new RuntimeException('Failed to read the certificate store');
+        }
+
         $certResource = openssl_x509_read($certs['cert']);
+        if ($certResource === false) {
+            throw new RuntimeException('Failed to read the certificate');
+        }
 
-        // Get the private key out of the cert
         $privateKey = openssl_pkey_get_private($certs['pkey'], $this->certStorePassword);
+        if ($privateKey === false) {
+            throw new RuntimeException('Failed to read the private key');
+        }
 
-        // Sign the manifest and store int in the signature file
-        openssl_pkcs7_sign(
-            $manifestPath,
-            $signaturePath,
-            $certResource,
-            $privateKey,
-            [],
-            PKCS7_BINARY | PKCS7_DETACHED,
-            $this->wwdrCertPath
-        );
+        if (
+            !openssl_pkcs7_sign(
+                $manifestPath,
+                $signaturePath,
+                $certResource,
+                $privateKey,
+                [],
+                PKCS7_BINARY | PKCS7_DETACHED,
+                $this->wwdrCertPath
+            )
+        ) {
+            throw new RuntimeException('Failed to sign the manifest');
+        }
 
         // PKCS7 returns a signature on PEM format (.p7s), we only need the DER signature so Apple does not cry.
         // It turns out we are lucky since p7s format is just a Base64 encoded DER signature
@@ -432,7 +439,7 @@ class PassGenerator
      *
      * @throws RuntimeException
      */
-    private function zipItAll() : void
+    private function zipItAll(): void
     {
         $zipPath = $this->passRealPath . '/' . $this->passFilename;
 
@@ -466,7 +473,7 @@ class PassGenerator
     /*
      * Create a temporary folder to store all files before creating the pass.
      */
-    private function createTempFolder() : void
+    private function createTempFolder(): void
     {
         if (!is_dir($this->passRealPath)) {
             Storage::disk('passgenerator')->makeDirectory($this->passRelativePath);

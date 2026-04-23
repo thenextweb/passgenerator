@@ -109,7 +109,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param array $associatedStoreIdentifier A list of iTunes Store item identifiers for the associated apps.
      * @return self
      */
-    public function setAppLaunchURL(string $appLaunchURL, array $associatedStoreIdentifier = null): self
+    public function setAppLaunchURL(string $appLaunchURL, ?array $associatedStoreIdentifier = null): self
     {
         $this->attributes['appLaunchURL'] = $appLaunchURL;
         if (is_array($associatedStoreIdentifier)) {
@@ -250,7 +250,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param int $maxDistance
      * @return self
      */
-    public function setMaxDistance(int $maxDistance) : self
+    public function setMaxDistance(int $maxDistance): self
     {
         $this->attributes['maxDistance'] = $maxDistance;
 
@@ -325,7 +325,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param string $color
      * @return self
      */
-    public function setBackgroundColor(string $color) : self
+    public function setBackgroundColor(string $color): self
     {
         $this->attributes['backgroundColor'] = $color;
 
@@ -339,7 +339,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param string $foregroundColor
      * @return self
      */
-    public function setForegroundColor(string $foregroundColor) : self
+    public function setForegroundColor(string $foregroundColor): self
     {
         $this->attributes['foregroundColor'] = $foregroundColor;
 
@@ -355,7 +355,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param string $labelColor
      * @return self
      */
-    public function setLabelColor(string $labelColor) : self
+    public function setLabelColor(string $labelColor): self
     {
         $this->attributes['labelColor'] = $labelColor;
 
@@ -368,7 +368,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param string $logoText
      * @return self
      */
-    public function setLogoText(string $logoText) : self
+    public function setLogoText(string $logoText): self
     {
         $this->attributes['logoText'] = $logoText;
 
@@ -384,7 +384,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param bool $flag
      * @return self
      */
-    public function setSuppressStripShine(bool $flag) : self
+    public function setSuppressStripShine(bool $flag): self
     {
         $this->attributes['suppressStripShine'] = $flag;
 
@@ -405,7 +405,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param string $authenticationToken
      * @return self
      */
-    public function setWebService(string $webServiceURL, string $authenticationToken) : self
+    public function setWebService(string $webServiceURL, string $authenticationToken): self
     {
         $this->attributes['webServiceURL'] = $webServiceURL;
         $this->attributes['authenticationToken'] = $authenticationToken;
@@ -419,7 +419,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param \Thenextweb\Definitions\Dictionary\Nfc $nfc
      * @return self
      */
-    public function setNfc(Nfc $nfc) : self
+    public function setNfc(Nfc $nfc): self
     {
         $this->attributes['nfc'] = $nfc;
 
@@ -436,7 +436,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param Field $field
      * @return $this
      */
-    public function appendAuxiliaryField(Field $field) : self
+    public function appendAuxiliaryField(Field $field): self
     {
         $this->getStructure('auxiliaryFields')->push($field);
 
@@ -449,7 +449,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param \Thenextweb\Definitions\Dictionary\Field $field
      * @return \Illuminate\Support\Collection
      */
-    public function prependAuxiliaryField(Field $field) : Collection
+    public function prependAuxiliaryField(Field $field): Collection
     {
         return $this->getStructure('auxiliaryFields')->prepend($field);
     }
@@ -460,7 +460,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param \Thenextweb\Definitions\Dictionary\Field $field
      * @return self
      */
-    public function addAuxiliaryField(Field $field) : self
+    public function addAuxiliaryField(Field $field): self
     {
         return $this->appendAuxiliaryField($field);
     }
@@ -470,7 +470,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      *
      * @return \Illuminate\Support\Collection
      */
-    public function getAuxiliaryFields() : Collection
+    public function getAuxiliaryFields(): Collection
     {
         return $this->getStructure('auxiliaryFields');
     }
@@ -484,7 +484,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param Field $field
      * @return $this
      */
-    public function appendBackField(Field $field) : self
+    public function appendBackField(Field $field): self
     {
         $this->getStructure('backFields')->push($field);
 
@@ -497,7 +497,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param \Thenextweb\Definitions\Dictionary\Field $field
      * @return \Illuminate\Support\Collection
      */
-    public function prependBackField(Field $field) : Collection
+    public function prependBackField(Field $field): Collection
     {
         return $this->getStructure('backFields')->prepend($field);
     }
@@ -508,7 +508,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param \Thenextweb\Definitions\Dictionary\Field $field
      * @return self
      */
-    public function addBackField(Field $field) : self
+    public function addBackField(Field $field): self
     {
         $this->appendBackField($field);
 
@@ -520,7 +520,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      *
      * @return \Illuminate\Support\Collection
      */
-    public function getBackFields() : Collection
+    public function getBackFields(): Collection
     {
         return $this->getStructure('backFields');
     }
@@ -538,7 +538,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param \Thenextweb\Definitions\Dictionary\Field $field
      * @return self
      */
-    public function appendHeaderField(Field $field) : self
+    public function appendHeaderField(Field $field): self
     {
         $this->getStructure('headerFields')->push($field);
 
@@ -554,7 +554,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param \Thenextweb\Definitions\Dictionary\Field $field
      * @return \Illuminate\Support\Collection
      */
-    public function prependHeaderField(Field $field) : Collection
+    public function prependHeaderField(Field $field): Collection
     {
         return $this->getStructure('headerFields')->prepend($field);
     }
@@ -568,14 +568,14 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param \Thenextweb\Definitions\Dictionary\Field $field
      * @return self
      */
-    public function addHeaderField(Field $field) : self
+    public function addHeaderField(Field $field): self
     {
         $this->appendHeaderField($field);
 
         return $this;
     }
 
-    public function getHeaderFields() : Collection
+    public function getHeaderFields(): Collection
     {
         return $this->getStructure('headerFields');
     }
@@ -590,7 +590,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param \Thenextweb\Definitions\Dictionary\Field $field
      * @return self
      */
-    public function appendPrimaryField(Field $field) : self
+    public function appendPrimaryField(Field $field): self
     {
         $this->getStructure('primaryFields')->push($field);
 
@@ -603,7 +603,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param \Thenextweb\Definitions\Dictionary\Field $field
      * @return \Illuminate\Support\Collection
      */
-    public function prependPrimaryField(Field $field) : Collection
+    public function prependPrimaryField(Field $field): Collection
     {
         return $this->getStructure('primaryFields')->prepend($field);
     }
@@ -614,14 +614,14 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param \Thenextweb\Definitions\Dictionary\Field $field
      * @return self
      */
-    public function addPrimaryField(Field $field) : self
+    public function addPrimaryField(Field $field): self
     {
         $this->appendPrimaryField($field);
 
         return $this;
     }
 
-    public function getPrimaryFields() : Collection
+    public function getPrimaryFields(): Collection
     {
         return $this->getStructure('primaryFields');
     }
@@ -636,7 +636,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param \Thenextweb\Definitions\Dictionary\Field $field
      * @return self
      */
-    public function appendSecondaryField(Field $field) : self
+    public function appendSecondaryField(Field $field): self
     {
         $this->getStructure('secondaryFields')->push($field);
 
@@ -649,7 +649,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param \Thenextweb\Definitions\Dictionary\Field $field
      * @return \Illuminate\Support\Collection
      */
-    public function prependSecondaryField(Field $field) : Collection
+    public function prependSecondaryField(Field $field): Collection
     {
         return $this->getStructure('secondaryFields')->prepend($field);
     }
@@ -660,14 +660,14 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param \Thenextweb\Definitions\Dictionary\Field $field
      * @return self
      */
-    public function addSecondaryField(Field $field) : self
+    public function addSecondaryField(Field $field): self
     {
         $this->appendSecondaryField($field);
 
         return $this;
     }
 
-    public function getSecondaryFields() : Collection
+    public function getSecondaryFields(): Collection
     {
         return $this->getStructure('secondaryFields');
     }
@@ -676,7 +676,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @param string $structure
      * @return \Illuminate\Support\Collection
      */
-    protected function getStructure($structure) : Collection
+    protected function getStructure($structure): Collection
     {
         if (!array_key_exists('structure', $this->attributes)) {
             $this->attributes['structure'] = [];
@@ -694,7 +694,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
      * @throws \Illuminate\Validation\ValidationException
      * @return array
      */
-    public function getPassDefinition() : array
+    public function getPassDefinition(): array
     {
         $definition = $this->toArray();
 
@@ -706,7 +706,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
     /**
      * Returns an array representation of the definition compatible with PassKit Package Format
      */
-    public function toArray() : array
+    public function toArray(): array
     {
         $data = array_map(function ($value) {
             return $value instanceof Arrayable ? $value->toArray() : $value;
@@ -742,7 +742,7 @@ abstract class AbstractDefinition extends Fluent implements DefinitionInterface
         return $data;
     }
 
-    public function rules() : array
+    public function rules(): array
     {
         return [
             'description' => 'required',
